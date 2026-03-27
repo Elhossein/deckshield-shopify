@@ -55,14 +55,85 @@
 
       <!-- Price -->
       <div class="fs-price-block">
-        <span class="fs-price" id="fs-price">{{ fv.price | money }}</span>
-        {%- if fv.compare_at_price > fv.price -%}
-          <s class="fs-was" id="fs-was">{{ fv.compare_at_price | money }}</s>
-          {%- assign spct = fv.compare_at_price | minus: fv.price | times: 100 | divided_by: fv.compare_at_price -%}
-          <span class="fs-save-pill">SAVE {{ spct }}%</span>
-        {%- endif -%}
+        <span class="fs-price" id="fs-price">$59.99</span>
+        <s class="fs-was" id="fs-was">$79.99</s>
+        <span class="fs-save-pill" id="fs-save-pill">SAVE 25%</span>
       </div>
-      <p class="fs-shopify-pay">or 4 interest-free payments of <strong>{{ fv.price | divided_by: 4 | money }}</strong> with <strong>Shop Pay</strong></p>
+      <p class="fs-shopify-pay">or 4 interest-free payments of <strong id="fs-installment">$15.00</strong> with <strong>Shop Pay</strong></p>
+
+      <!-- ═══ SALE TIMER ═══ -->
+      <div class="fs-sale-timer">
+        <div class="fs-sale-left">
+          <span class="fs-sale-icon">🔥</span>
+          <span class="fs-sale-label">Sale ends in:</span>
+        </div>
+        <div class="fs-timer-boxes">
+          <div class="fs-timer-box"><span id="fs-hr">05</span><small>HRS</small></div>
+          <span class="fs-timer-sep">:</span>
+          <div class="fs-timer-box"><span id="fs-mn">00</span><small>MIN</small></div>
+          <span class="fs-timer-sep">:</span>
+          <div class="fs-timer-box"><span id="fs-sc">00</span><small>SEC</small></div>
+        </div>
+      </div>
+
+      <!-- ═══ LOW STOCK URGENCY ═══ -->
+      <div class="fs-urgency">
+        <div class="fs-urgency-top">
+          <span class="fs-urgency-dot"></span>
+          <span>Hurry up! Only <strong>2 items</strong> left in stock!</span>
+        </div>
+        <div class="fs-urgency-bar"><div class="fs-urgency-fill"></div></div>
+        <div class="fs-urgency-bottom">
+          <span>Almost gone</span>
+          <span>93% sold</span>
+        </div>
+      </div>
+
+      <!-- ═══ BUNDLE DEALS ═══ -->
+      <p class="fs-bundle-heading">BUY MORE &amp; SAVE</p>
+      <div class="fs-bundles" id="fs-bundles">
+
+        <div class="fs-bundle-card fs-bundle-active" data-qty="1" data-price="5999" data-compare="7999">
+          <div class="fs-bundle-radio"><div class="fs-bundle-dot"></div></div>
+          <div class="fs-bundle-info">
+            <strong>1 Mat</strong>
+            <span>🔥 Save $20.00 today!</span>
+          </div>
+          <div class="fs-bundle-prices">
+            <span class="fs-bundle-price">$59.99</span>
+            <s class="fs-bundle-compare">$79.99</s>
+          </div>
+        </div>
+
+        <div class="fs-bundle-card" data-qty="2" data-price="8999" data-compare="11998">
+          <div class="fs-bundle-radio"><div class="fs-bundle-dot"></div></div>
+          <div class="fs-bundle-info">
+            <strong>2 Mats</strong>
+            <span>🎉 Buy One Get One <b>Half Off</b></span>
+          </div>
+          <div class="fs-bundle-prices">
+            <span class="fs-bundle-price">$89.99</span>
+            <s class="fs-bundle-compare">$119.98</s>
+          </div>
+        </div>
+
+        <div class="fs-bundle-divider">
+          <span class="fs-bundle-best-tag">⭐ BEST VALUE — MOST POPULAR</span>
+        </div>
+
+        <div class="fs-bundle-card fs-bundle-best" data-qty="3" data-price="12999" data-compare="17997">
+          <div class="fs-bundle-radio"><div class="fs-bundle-dot"></div></div>
+          <div class="fs-bundle-info">
+            <strong>3 Mats — Family Deal</strong>
+            <span>🔥 Perfect for the whole family</span>
+          </div>
+          <div class="fs-bundle-prices">
+            <span class="fs-bundle-price">$129.99</span>
+            <s class="fs-bundle-compare">$179.97</s>
+          </div>
+        </div>
+
+      </div>
 
       <!-- Variant data -->
       <script id="fs-variant-data" type="application/json">
@@ -79,7 +150,7 @@
 
       <!-- CTA -->
       <button class="fs-cta" id="fs-cta">
-        Add to Cart — <span id="fs-cta-price">{{ fv.price | money }}</span>
+        Add to Cart — <span id="fs-cta-price">$59.99</span>
       </button>
 
       <!-- Stock bar -->
@@ -484,7 +555,7 @@
 <div class="fs-sticky" id="fs-sticky">
   <div class="fs-sticky-left">
     <strong>{{ ds.title | truncate: 36 }}</strong>
-    <span id="fs-sticky-price">{{ fv.price | money }}</span>
+    <span id="fs-sticky-price">$59.99</span>
   </div>
   <button class="fs-sticky-btn" id="fs-sticky-btn">Add to Cart</button>
 </div>
@@ -499,10 +570,61 @@
   var ctaPrice = document.getElementById('fs-cta-price');
   var priceEl = document.getElementById('fs-price');
   var wasEl = document.getElementById('fs-was');
+  var savePill = document.getElementById('fs-save-pill');
   var stickyPrice = document.getElementById('fs-sticky-price');
   var sticky = document.getElementById('fs-sticky');
+  var installmentEl = document.getElementById('fs-installment');
 
-  function fmt(c){ return '$'+(c/100).toFixed(2); }
+  var bundleQty = 1;
+
+  function fmtCents(c){ return '$'+(c/100).toFixed(2); }
+
+  function updatePriceDisplay(price, compare){
+    priceEl.textContent = fmtCents(price);
+    wasEl.textContent = fmtCents(compare);
+    var pct = Math.round((compare - price) / compare * 100);
+    savePill.textContent = 'SAVE ' + pct + '%';
+    ctaPrice.textContent = fmtCents(price);
+    stickyPrice.textContent = fmtCents(price);
+    installmentEl.textContent = fmtCents(Math.round(price / 4));
+  }
+
+  // Bundle selection
+  document.querySelectorAll('.fs-bundle-card').forEach(function(card){
+    card.addEventListener('click', function(){
+      document.querySelectorAll('.fs-bundle-card').forEach(function(c){ c.classList.remove('fs-bundle-active'); });
+      card.classList.add('fs-bundle-active');
+      bundleQty = parseInt(card.dataset.qty);
+      updatePriceDisplay(parseInt(card.dataset.price), parseInt(card.dataset.compare));
+    });
+  });
+
+  // 5-hour countdown timer
+  (function(){
+    var key = 'fs_sale_end';
+    var stored = localStorage.getItem(key);
+    var end;
+    if(stored && parseInt(stored) > Date.now()){
+      end = parseInt(stored);
+    } else {
+      end = Date.now() + 5*60*60*1000;
+      localStorage.setItem(key, end);
+    }
+    var hrEl = document.getElementById('fs-hr');
+    var mnEl = document.getElementById('fs-mn');
+    var scEl = document.getElementById('fs-sc');
+    function tick(){
+      var diff = Math.max(0, Math.floor((end - Date.now()) / 1000));
+      var h = Math.floor(diff/3600);
+      var m = Math.floor((diff%3600)/60);
+      var s = diff%60;
+      hrEl.textContent = String(h).padStart(2,'0');
+      mnEl.textContent = String(m).padStart(2,'0');
+      scEl.textContent = String(s).padStart(2,'0');
+    }
+    tick();
+    setInterval(tick, 1000);
+  })();
 
   // Thumbnails
   document.querySelectorAll('.fs-thumb').forEach(function(t){
@@ -520,7 +642,7 @@
     if(cta){ cta.disabled=true; cta.textContent='Adding…'; }
     if(stickyBtn){ stickyBtn.disabled=true; stickyBtn.textContent='Adding…'; }
     try{
-      var res = await fetch('/cart/add.js',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({items:[{id:v.id,quantity:1}]})});
+      var res = await fetch('/cart/add.js',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({items:[{id:v.id,quantity:bundleQty}]})});
       if(!res.ok){ var e=await res.json().catch(function(){return{};}); throw new Error(e.description||'Error'); }
       var cart = await fetch('/cart.js').then(function(r){return r.json();});
       var badge = document.querySelector('.ds-cart-badge');
@@ -542,10 +664,6 @@
   if(hero && sticky){
     new IntersectionObserver(function(e){ sticky.style.transform = e[0].isIntersecting ? 'translateY(100%)' : 'translateY(0)'; },{threshold:0.05}).observe(hero);
   }
-
-  // Timer
-  var timerEl = document.getElementById('fs-timer');
-  if(timerEl){ var s=11*3600+47*12; setInterval(function(){ s=Math.max(0,s-1); var h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sc=s%60; timerEl.textContent=[h,m,sc].map(function(n){return n.toString().padStart(2,'0');}).join(':'); },1000); }
 
   // Gallery sticky on scroll
   var gallery = document.getElementById('fs-gallery');
@@ -592,6 +710,56 @@
 .fs-was { font-size: 1.1rem; color: #bbb; text-decoration: line-through; }
 .fs-save-pill { background: #e85d04; color: #fff; font-size: 0.68rem; font-weight: 800; padding: 4px 12px; border-radius: 99px; letter-spacing: 0.05em; }
 .fs-shopify-pay { font-size: 0.8rem; color: #888; margin-bottom: 22px; }
+
+/* ═══ SALE TIMER ═══ */
+.fs-sale-timer { display: flex; align-items: center; justify-content: space-between; background: linear-gradient(135deg, #1a472a, #2d6a3f); border: 1.5px solid #3a8c55; border-radius: 12px; padding: 14px 18px; margin-bottom: 12px; }
+.fs-sale-left { display: flex; align-items: center; gap: 8px; }
+.fs-sale-icon { font-size: 1.1rem; }
+.fs-sale-label { font-size: 0.85rem; font-weight: 700; color: #fff; }
+.fs-timer-boxes { display: flex; align-items: center; gap: 6px; }
+.fs-timer-box { background: #fff; border-radius: 8px; padding: 6px 10px; text-align: center; min-width: 48px; }
+.fs-timer-box span { display: block; font-size: 1.3rem; font-weight: 900; color: #1a472a; line-height: 1; }
+.fs-timer-box small { display: block; font-size: 0.55rem; font-weight: 700; color: #888; letter-spacing: 0.1em; margin-top: 2px; }
+.fs-timer-sep { font-size: 1.3rem; font-weight: 900; color: #fff; }
+
+/* ═══ LOW STOCK URGENCY ═══ */
+.fs-urgency { background: #fff; border: 1.5px solid #e0e0e0; border-radius: 12px; padding: 14px 18px; margin-bottom: 16px; }
+.fs-urgency-top { display: flex; align-items: center; gap: 8px; font-size: 0.88rem; color: #333; margin-bottom: 10px; }
+.fs-urgency-dot { width: 10px; height: 10px; border-radius: 50%; background: #c0392b; flex-shrink: 0; animation: fs-pulse 1.5s ease-in-out infinite; }
+@keyframes fs-pulse { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+.fs-urgency-bar { height: 10px; background: #f0f0f0; border-radius: 99px; overflow: hidden; margin-bottom: 6px; }
+.fs-urgency-fill { height: 100%; width: 93%; background: linear-gradient(90deg, #e85d04, #ff7c2a); border-radius: 99px; }
+.fs-urgency-bottom { display: flex; justify-content: space-between; font-size: 0.75rem; color: #999; font-weight: 600; }
+
+/* ═══ BUNDLE DEALS ═══ */
+.fs-bundle-heading { font-size: 0.78rem; font-weight: 800; color: #333; text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 10px; text-align: center; }
+.fs-bundles { display: flex; flex-direction: column; gap: 0; margin-bottom: 20px; }
+.fs-bundle-card { display: flex; align-items: center; gap: 14px; padding: 16px 18px; border: 2px solid #e5e5e5; cursor: pointer; transition: all 0.2s ease; background: #fff; }
+.fs-bundle-card:first-child { border-radius: 12px 12px 0 0; }
+.fs-bundle-card:last-child { border-radius: 0 0 12px 12px; }
+.fs-bundle-card + .fs-bundle-card { border-top: none; }
+.fs-bundle-card + .fs-bundle-divider + .fs-bundle-card { border-top: none; }
+.fs-bundle-card:hover { background: #fafaf8; }
+.fs-bundle-card.fs-bundle-active { border-color: #2d6a3f; background: #f0faf3; box-shadow: 0 0 0 1px #2d6a3f; z-index: 1; position: relative; }
+.fs-bundle-card.fs-bundle-best.fs-bundle-active { background: #edf7f0; }
+.fs-bundle-radio { width: 22px; height: 22px; border-radius: 50%; border: 2px solid #ccc; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: border-color 0.2s; }
+.fs-bundle-active .fs-bundle-radio { border-color: #2d6a3f; }
+.fs-bundle-dot { width: 12px; height: 12px; border-radius: 50%; background: transparent; transition: background 0.2s; }
+.fs-bundle-active .fs-bundle-dot { background: #2d6a3f; }
+.fs-bundle-info { flex: 1; }
+.fs-bundle-info strong { display: block; font-size: 0.95rem; color: #111; }
+.fs-bundle-info span { font-size: 0.78rem; color: #777; }
+.fs-bundle-prices { text-align: right; flex-shrink: 0; }
+.fs-bundle-price { display: block; font-size: 1.1rem; font-weight: 900; color: #111; }
+.fs-bundle-compare { font-size: 0.82rem; color: #bbb; text-decoration: line-through; }
+.fs-bundle-divider { text-align: center; margin: 0; position: relative; z-index: 2; }
+.fs-bundle-best-tag { display: inline-block; background: linear-gradient(135deg, #d4a017, #f5c518); color: #333; font-size: 0.65rem; font-weight: 800; padding: 4px 16px; border-radius: 99px; letter-spacing: 0.08em; text-transform: uppercase; transform: translateY(50%); box-shadow: 0 2px 8px rgba(212,160,23,0.3); }
+@media(max-width: 480px) {
+  .fs-bundle-info span { font-size: 0.7rem; }
+  .fs-timer-box { min-width: 40px; padding: 5px 8px; }
+  .fs-timer-box span { font-size: 1.1rem; }
+}
+
 .fs-bullets { list-style: none; padding: 0; margin: 0 0 24px; display: flex; flex-direction: column; gap: 10px; }
 .fs-bullets li { display: flex; align-items: flex-start; gap: 10px; font-size: 0.9rem; color: #333; line-height: 1.45; }
 .fs-bullets svg { color: #e85d04; flex-shrink: 0; margin-top: 1px; }
