@@ -5,17 +5,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-<!-- ══ ANNOUNCEMENT BAR ══ -->
-<div class="fs-announce">
-  <div class="fs-announce-track">
-    {%- for i in (1..10) -%}
-      <span>🔥 FREE SHIPPING ON ALL ORDERS</span><span class="fs-sep">★</span>
-      <span>30-DAY MONEY-BACK GUARANTEE</span><span class="fs-sep">★</span>
-      <span>50,000+ DECKS PROTECTED</span><span class="fs-sep">★</span>
-    {%- endfor -%}
-  </div>
-</div>
-
 <!-- ══ PRODUCT HERO ══ -->
 <section class="fs-hero">
   <div class="fs-hero-wrap">
@@ -581,12 +570,6 @@
 /* ── Fonts ── */
 .fs-title, .fs-vs-headline, .fs-sec-h2, .fs-footer-brand { font-family: 'Playfair Display', Georgia, serif; }
 .fs-hero *, .fs-reviews *, .fs-faq *, .fs-vs *, .fs-features *, .fs-how *, .fs-ticker, .fs-announce, .fs-sticky { font-family: 'Inter', -apple-system, sans-serif; }
-
-/* ── Announce ── */
-.fs-announce { background: #1a1a1a; color: rgba(255,255,255,0.85); font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; padding: 10px 0; overflow: hidden; white-space: nowrap; }
-.fs-announce-track { display: inline-flex; align-items: center; gap: 20px; animation: fs-tick 32s linear infinite; }
-.fs-sep { color: #e85d04; }
-@keyframes fs-tick { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
 /* ── Hero ── */
 .fs-hero { background: #fff; padding: 48px 24px 64px; }

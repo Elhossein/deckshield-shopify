@@ -1,15 +1,6 @@
 <!-- ══ DECKSHIELD HEADER ══ -->
 <div class="ds-announce">
-  <div class="ds-announce-track">
-    {%- for i in (1..10) -%}
-      <span>🔥 FREE SHIPPING ON ALL ORDERS</span>
-      <span class="ds-asep">★</span>
-      <span>30-DAY MONEY-BACK GUARANTEE</span>
-      <span class="ds-asep">★</span>
-      <span>50,000+ DECKS PROTECTED</span>
-      <span class="ds-asep">★</span>
-    {%- endfor -%}
-  </div>
+  <a href="/products/grill-mat" class="ds-announce-link">🔥 Free Shipping on All Orders &nbsp;·&nbsp; 30-Day Money-Back Guarantee &nbsp;<strong>Shop Now →</strong></a>
 </div>
 
 <header class="ds-header">
@@ -38,10 +29,9 @@
 </header>
 
 <style>
-.ds-announce{background:#111;color:rgba(255,255,255,0.85);font-size:0.7rem;font-weight:700;letter-spacing:0.08em;padding:10px 0;overflow:hidden;white-space:nowrap}
-.ds-announce-track{display:inline-flex;align-items:center;gap:20px;animation:ds-ticker 32s linear infinite}
-.ds-asep{color:#e85d04}
-@keyframes ds-ticker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.ds-announce{background:#e85d04;color:#fff;font-size:0.78rem;font-weight:600;padding:10px 16px;text-align:center}
+.ds-announce-link{color:#fff;text-decoration:none;letter-spacing:0.01em}
+.ds-announce-link:hover{text-decoration:underline}
 .ds-header{position:sticky;top:0;z-index:800;background:#fff;border-bottom:1px solid #eee;box-shadow:0 1px 8px rgba(0,0,0,0.06)}
 .ds-header-inner{max-width:1200px;margin:0 auto;padding:0 24px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;height:70px}
 .ds-nav{display:flex;gap:24px;align-items:center}
