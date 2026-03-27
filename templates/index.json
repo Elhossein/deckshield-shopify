@@ -1,6 +1,7 @@
 {
   "sections": {
-    "ds-header": { "type": "ds-header", "settings": {} }
+    "ds-header":   { "type": "ds-header",   "settings": {} },
+    "ds-homepage": { "type": "ds-homepage", "settings": {} }
   },
-  "order": ["ds-header"]
+  "order": ["ds-header", "ds-homepage"]
 }
