@@ -2,30 +2,44 @@
 {%- assign fv = ds.selected_or_first_available_variant -%}
 {%- assign ds_imgs = 'gs-main.jpg,gs-lifestyle-1.jpg,gs-info-1.jpg,gs-info-2.jpg,gs-info-3.jpg,gs-info-4.jpg' | split: ',' -%}
 
-<!-- ══ PRODUCT HERO ══ -->
-<section class="ds-hero">
-  <div class="ds-hero-layout">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <!-- LEFT: Gallery -->
-    <div class="ds-gallery">
-      <div class="ds-gallery-main">
+<!-- ══ ANNOUNCEMENT BAR ══ -->
+<div class="fs-announce">
+  <div class="fs-announce-track">
+    {%- for i in (1..10) -%}
+      <span>🔥 FREE SHIPPING ON ALL ORDERS</span><span class="fs-sep">★</span>
+      <span>30-DAY MONEY-BACK GUARANTEE</span><span class="fs-sep">★</span>
+      <span>50,000+ DECKS PROTECTED</span><span class="fs-sep">★</span>
+    {%- endfor -%}
+  </div>
+</div>
+
+<!-- ══ PRODUCT HERO ══ -->
+<section class="fs-hero">
+  <div class="fs-hero-wrap">
+
+    <!-- LEFT: Sticky Gallery -->
+    <div class="fs-gallery" id="fs-gallery">
+      <div class="fs-gallery-main">
         {%- if ds.images.size > 0 -%}
-          <img id="ds-main-img" src="{{ ds.featured_image | image_url: width: 900 }}" alt="{{ ds.title }}" class="ds-main-img" />
+          <img id="fs-main-img" src="{{ ds.featured_image | image_url: width: 1000 }}" alt="{{ ds.title }}" />
         {%- else -%}
-          <img id="ds-main-img" src="{{ 'gs-main.jpg' | asset_url }}" alt="{{ ds.title }}" class="ds-main-img" />
+          <img id="fs-main-img" src="{{ 'gs-main.jpg' | asset_url }}" alt="{{ ds.title }}" />
         {%- endif -%}
-        <div class="ds-award-badge">🏆 #1 Best Seller</div>
+        <span class="fs-badge">🏆 Best Seller</span>
       </div>
-      <div class="ds-thumbs">
+      <div class="fs-thumbs">
         {%- if ds.images.size > 0 -%}
           {%- for img in ds.images -%}
-            <button type="button" class="ds-thumb{% if forloop.first %} ds-thumb--active{% endif %}" data-src="{{ img | image_url: width: 900 }}">
+            <button class="fs-thumb{% if forloop.first %} active{% endif %}" data-src="{{ img | image_url: width: 1000 }}">
               <img src="{{ img | image_url: width: 120 }}" alt="{{ ds.title }}" loading="lazy" />
             </button>
           {%- endfor -%}
         {%- else -%}
           {%- for img in ds_imgs -%}
-            <button type="button" class="ds-thumb{% if forloop.first %} ds-thumb--active{% endif %}" data-src="{{ img | asset_url }}">
+            <button class="fs-thumb{% if forloop.first %} active{% endif %}" data-src="{{ img | asset_url }}">
               <img src="{{ img | asset_url }}" alt="View {{ forloop.index }}" loading="lazy" />
             </button>
           {%- endfor -%}
@@ -33,152 +47,105 @@
       </div>
     </div>
 
-    <!-- RIGHT: Form -->
-    <div class="ds-form">
+    <!-- RIGHT: Product Info -->
+    <div class="fs-info">
 
-      <!-- Award row -->
-      <div class="ds-awards-row">
-        <span class="ds-award-pill">🔥 Outdoor Living Award 2024</span>
-        <span class="ds-award-pill">⭐ Amazon's Choice</span>
-      </div>
-
-      <!-- Social proof -->
-      <div class="ds-proof-badge">
-        <span class="ds-pulse"></span>
-        <span>🛡️ <strong>50,000+</strong> decks protected — loved by homeowners</span>
-      </div>
-
-      <!-- Stars -->
-      <div class="ds-stars-row">
-        <span class="ds-stars">★★★★★</span>
-        <span class="ds-review-ct">4.8 · 3,241 verified reviews</span>
+      <!-- Rating row -->
+      <div class="fs-rating-row">
+        <span class="fs-stars">★★★★★</span>
+        <span class="fs-rating-num">4.8 / 5</span>
+        <span class="fs-sep2">·</span>
+        <span class="fs-review-link">Loved by <strong>50,000+</strong> customers</span>
       </div>
 
       <!-- Title -->
-      <h1 class="ds-title">{{ ds.title }}</h1>
-      <p class="ds-tagline">The last grill mat you'll ever need. <em>Protect your deck in seconds</em> — weather-proof, non-slip, and effortless to clean.</p>
+      <h1 class="fs-title">{{ ds.title }}</h1>
+
+      <!-- Subtitle -->
+      <p class="fs-subtitle">The only grill mat built to last — <strong>weather-proof, non-slip, and spotless in 30 seconds.</strong></p>
 
       <!-- Price -->
-      <div class="ds-price-row">
-        <span class="ds-price" id="ds-price">{{ fv.price | money }}</span>
-        <s class="ds-compare" id="ds-compare"{% unless fv.compare_at_price > fv.price %} style="display:none"{% endunless %}>{{ fv.compare_at_price | money }}</s>
+      <div class="fs-price-block">
+        <span class="fs-price" id="fs-price">{{ fv.price | money }}</span>
         {%- if fv.compare_at_price > fv.price -%}
-          {%- assign save_pct = fv.compare_at_price | minus: fv.price | times: 100 | divided_by: fv.compare_at_price -%}
-          <span class="ds-save-badge">SAVE {{ save_pct }}%</span>
+          <s class="fs-was" id="fs-was">{{ fv.compare_at_price | money }}</s>
+          {%- assign spct = fv.compare_at_price | minus: fv.price | times: 100 | divided_by: fv.compare_at_price -%}
+          <span class="fs-save-pill">SAVE {{ spct }}%</span>
         {%- endif -%}
       </div>
-
-      <!-- Installments note -->
-      <p class="ds-installment">or 4 interest-free payments of <strong>{{ fv.price | divided_by: 4 | money }}</strong> with <strong>Shop Pay</strong></p>
+      <p class="fs-shopify-pay">or 4 interest-free payments of <strong>{{ fv.price | divided_by: 4 | money }}</strong> with <strong>Shop Pay</strong></p>
 
       <!-- Variant data -->
-      <script id="ds-variant-data" type="application/json">
+      <script id="fs-variant-data" type="application/json">
         [{%- for v in ds.variants -%}{"id":{{ v.id }},"price":{{ v.price }},"compare_at_price":{{ v.compare_at_price | default: 0 }},"available":{{ v.available }}}{% unless forloop.last %},{% endunless %}{%- endfor -%}]
       </script>
 
-      <!-- Key bullets -->
-      <ul class="ds-bullets">
-        <li><span class="ds-bi">🌧️</span> <strong>100% Weather-Resistant PVC</strong> — handles rain, sun & heat all season</li>
-        <li><span class="ds-bi">🛡️</span> <strong>Shields grease, spills & stains</strong> — keeps wood, composite & concrete spotless</li>
-        <li><span class="ds-bi">🔒</span> <strong>Non-slip & stays in place</strong> — won't shift under your grill or griddle</li>
-        <li><span class="ds-bi">💧</span> <strong>Easy clean</strong> — just rinse with a hose and it's good to go</li>
-        <li><span class="ds-bi">📐</span> <strong>65" × 36" generous size</strong> — fits most grills, smokers & griddles</li>
+      <!-- Bullets -->
+      <ul class="fs-bullets">
+        <li><svg viewBox="0 0 20 20" fill="currentColor" width="18" height="18"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg><span>100% Weather-Resistant PVC — rain, UV &amp; heat proof all season</span></li>
+        <li><svg viewBox="0 0 20 20" fill="currentColor" width="18" height="18"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg><span>Shields grease, spills &amp; stains — wood, composite &amp; concrete safe</span></li>
+        <li><svg viewBox="0 0 20 20" fill="currentColor" width="18" height="18"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg><span>Non-slip design — stays locked in place under any grill</span></li>
+        <li><svg viewBox="0 0 20 20" fill="currentColor" width="18" height="18"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg><span>Rinse-clean in 30 seconds — just a garden hose</span></li>
       </ul>
 
-      <!-- Trust row -->
-      <div class="ds-trust-row">
-        <div class="ds-trust-item">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="20" height="20"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
-          <span>Free Shipping</span>
-        </div>
-        <div class="ds-trust-item">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="20" height="20"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-          <span>30-Day Guarantee</span>
-        </div>
-        <div class="ds-trust-item">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="20" height="20"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
-          <span>Secure Checkout</span>
-        </div>
-        <div class="ds-trust-item">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="20" height="20"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-          <span>1-Year Warranty</span>
+      <!-- CTA -->
+      <button class="fs-cta" id="fs-cta">
+        Add to Cart — <span id="fs-cta-price">{{ fv.price | money }}</span>
+      </button>
+
+      <!-- Stock bar -->
+      <div class="fs-stock-wrap">
+        <div class="fs-stock-bar"><div class="fs-stock-fill" style="width:78%"></div></div>
+        <p class="fs-stock-text">⚡ <strong>78% SOLD</strong> — Only 12 left at this price</p>
+      </div>
+
+      <!-- Guarantee box -->
+      <div class="fs-guarantee">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="28" height="28"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <div>
+          <strong>30-Day Money-Back Guarantee</strong>
+          <span>Love your deck, or get a full refund. 100% risk-free.</span>
         </div>
       </div>
 
-      <!-- CTA -->
-      <button type="button" class="ds-cta-btn" id="ds-cta-btn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
-        Add to Cart — <span id="ds-cta-price">{{ fv.price | money }}</span>
-      </button>
-
-      <p class="ds-ship-note">🚚 Free shipping · Ships in 1–2 business days · Arrives in <strong>3–7 days</strong></p>
-
-      <!-- Urgency -->
-      <div class="ds-urgency">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        <span>Deal ends in <strong id="ds-timer">11:47:02</strong> — only <strong>12 left</strong> in stock</span>
+      <!-- Trust icons -->
+      <div class="fs-trust">
+        <div class="fs-trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="20" height="20"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg><span>Free Shipping</span></div>
+        <div class="fs-trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="20" height="20"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg><span>Secure Checkout</span></div>
+        <div class="fs-trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="20" height="20"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span>1-Year Warranty</span></div>
       </div>
 
       <!-- Collapsibles -->
-      <div class="ds-collapsibles">
-        <details class="ds-detail">
-          <summary class="ds-det-sum"><span>📦</span> What's in the Box <svg class="ds-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polyline points="6 9 12 15 18 9"/></svg></summary>
-          <div class="ds-det-body"><p>1 × Premium Deck &amp; Patio Grill Mat (65" × 36") · Made from 100% weather-resistant PVC · Black finish · Wall peg hole for storage.</p></div>
-        </details>
-        <details class="ds-detail">
-          <summary class="ds-det-sum"><span>⚙️</span> How to Use <svg class="ds-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polyline points="6 9 12 15 18 9"/></svg></summary>
-          <div class="ds-det-body"><p>Unroll and place flat beneath your grill, smoker, or griddle. The mat's weight keeps it firmly in place. After grilling, wipe up solids and rinse with a garden hose — dry within minutes. Roll up and store using the built-in hook hole.</p></div>
-        </details>
-        <details class="ds-detail">
-          <summary class="ds-det-sum"><span>🛡️</span> 30-Day Guarantee <svg class="ds-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polyline points="6 9 12 15 18 9"/></svg></summary>
-          <div class="ds-det-body"><p>Not satisfied for any reason? Contact us within 30 days and we'll refund you in full — no hassle, no questions. Your deck is covered, and so is your purchase.</p></div>
-        </details>
-        <details class="ds-detail">
-          <summary class="ds-det-sum"><span>🚚</span> Shipping &amp; Delivery <svg class="ds-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polyline points="6 9 12 15 18 9"/></svg></summary>
-          <div class="ds-det-body"><p>Free standard shipping on all US orders. Orders ship in 1–2 business days and arrive in 3–7 days. Tracking provided via email. We ship via USPS, UPS, and FedEx.</p></div>
-        </details>
+      <div class="fs-accordions">
+        <details class="fs-acc"><summary class="fs-acc-q">What's in the Box <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polyline points="6 9 12 15 18 9"/></svg></summary><p class="fs-acc-a">1 × Premium Deck &amp; Patio Grill Mat (65" × 36") · 100% weather-resistant PVC · Black diamond-plate finish · Wall peg storage hole.</p></details>
+        <details class="fs-acc"><summary class="fs-acc-q">How to Use <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polyline points="6 9 12 15 18 9"/></svg></summary><p class="fs-acc-a">Unroll and place under your grill. After use, wipe solids and rinse with a garden hose. Dry in minutes. Roll up and hang using the built-in hook hole.</p></details>
+        <details class="fs-acc"><summary class="fs-acc-q">Shipping &amp; Returns <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polyline points="6 9 12 15 18 9"/></svg></summary><p class="fs-acc-a">Free US shipping on all orders. Ships in 1–2 business days, delivers in 3–7 days. 30-day hassle-free returns. We cover return shipping.</p></details>
       </div>
 
     </div>
   </div>
 </section>
 
-<!-- ══ PRODUCT VIDEOS ══ -->
+<!-- ══ VIDEOS ══ -->
 {%- assign ds_has_video = false -%}
-{%- for media in ds.media -%}
-  {%- if media.media_type == 'video' or media.media_type == 'external_video' -%}
-    {%- assign ds_has_video = true -%}
-    {%- break -%}
-  {%- endif -%}
-{%- endfor -%}
-
+{%- for media in ds.media -%}{%- if media.media_type == 'video' or media.media_type == 'external_video' -%}{%- assign ds_has_video = true -%}{%- break -%}{%- endif -%}{%- endfor -%}
 {%- if ds_has_video -%}
-<section class="ds-video-section">
-  <div class="ds-video-inner">
-    <p class="ds-eyebrow" style="text-align:center">SEE IT IN ACTION</p>
-    <h2 class="ds-section-title" style="text-align:center;color:#fff">Watch How It Works</h2>
-    <div class="ds-videos-grid">
+<section class="fs-videos-section">
+  <div class="fs-sec-inner">
+    <p class="fs-eyebrow">SEE IT IN ACTION</p>
+    <h2 class="fs-sec-title" style="color:#fff">Watch How It Works</h2>
+    <div class="fs-vgrid">
       {%- for media in ds.media -%}
         {%- if media.media_type == 'video' -%}
-          <div class="ds-video-wrap">
-            <video controls autoplay muted loop playsinline preload="auto"
-              poster="{{ media.preview_image | image_url: width: 800 }}"
-              style="background:#000">
-              {%- for source in media.sources -%}
-                <source src="{{ source.url }}" type="{{ source.mime_type }}" />
-              {%- endfor -%}
+          <div class="fs-vwrap">
+            <video controls autoplay muted loop playsinline preload="auto" poster="{{ media.preview_image | image_url: width: 800 }}">
+              {%- for src in media.sources -%}<source src="{{ src.url }}" type="{{ src.mime_type }}">{%- endfor -%}
             </video>
           </div>
         {%- elsif media.media_type == 'external_video' -%}
-          <div class="ds-video-wrap">
+          <div class="fs-vwrap">
             {%- if media.host == 'youtube' -%}
-              <iframe src="https://www.youtube.com/embed/{{ media.external_id }}?autoplay=0&rel=0"
-                frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowfullscreen loading="lazy"></iframe>
-            {%- elsif media.host == 'vimeo' -%}
-              <iframe src="https://player.vimeo.com/video/{{ media.external_id }}"
-                frameborder="0" allow="autoplay; fullscreen; picture-in-picture"
-                allowfullscreen loading="lazy"></iframe>
+              <iframe src="https://www.youtube.com/embed/{{ media.external_id }}?rel=0" frameborder="0" allowfullscreen loading="lazy"></iframe>
             {%- endif -%}
           </div>
         {%- endif -%}
@@ -189,87 +156,100 @@
 {%- endif -%}
 
 <!-- ══ SOCIAL PROOF TICKER ══ -->
-<div class="ds-ticker-strip">
-  <div class="ds-ticker-track">
+<div class="fs-ticker">
+  <div class="fs-ticker-track">
     {%- for i in (1..8) -%}
-      <span>"Finally — a mat that actually stays put!" — <strong>Mike D.</strong></span>
-      <span class="ds-tsep">★★★★★</span>
-      <span>"My deck looks brand new after grilling season." — <strong>Sarah L.</strong></span>
-      <span class="ds-tsep">★★★★★</span>
-      <span>"Rinses clean in 30 seconds. Incredible." — <strong>James R.</strong></span>
-      <span class="ds-tsep">★★★★★</span>
+      <span>"Best purchase I made this summer!" — <strong>Mike D.</strong></span><span class="fs-tsep">★★★★★</span>
+      <span>"My deck looks brand new after grilling season." — <strong>Sarah L.</strong></span><span class="fs-tsep">★★★★★</span>
+      <span>"Rinses clean in 30 seconds. Unreal." — <strong>James R.</strong></span><span class="fs-tsep">★★★★★</span>
     {%- endfor -%}
   </div>
 </div>
 
-<!-- ══ WHY US vs COMPETITION (Solawave-style) ══ -->
-<section class="ds-vs-section">
-  <div class="ds-section-inner">
-    <p class="ds-eyebrow">THE DECKSHIELD DIFFERENCE</p>
-    <h2 class="ds-section-title">You've seen other grill mats.<br>They aren't DeckShield.</h2>
-    <div class="ds-vs-grid">
-      <div class="ds-vs-card ds-vs-us">
-        <div class="ds-vs-header">DeckShield</div>
-        <ul class="ds-vs-list">
-          <li class="ds-vs-win">✅ 100% Heavy-Duty PVC — no warping</li>
-          <li class="ds-vs-win">✅ 65" × 36" — fits any grill setup</li>
-          <li class="ds-vs-win">✅ Non-slip weighted design</li>
-          <li class="ds-vs-win">✅ All-weather: rain, UV &amp; heat resistant</li>
-          <li class="ds-vs-win">✅ Works on wood, composite &amp; concrete</li>
-          <li class="ds-vs-win">✅ Rinse-clean in under 60 seconds</li>
-          <li class="ds-vs-win">✅ 30-day money-back guarantee</li>
-          <li class="ds-vs-win">✅ 1-Year warranty</li>
-        </ul>
+<!-- ══ VS COMPETITION (Solawave table style) ══ -->
+<section class="fs-vs">
+  <div class="fs-sec-inner">
+    <p class="fs-eyebrow-dark">THE FLAME SHIELD DIFFERENCE</p>
+    <h2 class="fs-vs-headline">You've seen other grill mats.<br><em>They aren't Flame Shield. That matters.</em></h2>
+    <div class="fs-vs-points">
+      <div class="fs-vs-point">
+        <div class="fs-vs-num">1</div>
+        <div>
+          <strong>We use heavy-duty commercial-grade PVC.</strong>
+          <span>They use thin, flimsy plastic that cracks in the heat.</span>
+        </div>
       </div>
-      <div class="ds-vs-card ds-vs-them">
-        <div class="ds-vs-header ds-vs-header--them">Other Brands</div>
-        <ul class="ds-vs-list">
-          <li class="ds-vs-lose">❌ Thin PVC — cracks &amp; warps in heat</li>
-          <li class="ds-vs-lose">❌ Too small — doesn't fit your grill</li>
-          <li class="ds-vs-lose">❌ Slides around constantly</li>
-          <li class="ds-vs-lose">❌ Fades &amp; cracks after 1 season</li>
-          <li class="ds-vs-lose">❌ Only for concrete surfaces</li>
-          <li class="ds-vs-lose">❌ Grease soaks in — impossible to clean</li>
-          <li class="ds-vs-lose">❌ No returns after use</li>
-          <li class="ds-vs-lose">❌ No warranty</li>
-        </ul>
+      <div class="fs-vs-point">
+        <div class="fs-vs-num">2</div>
+        <div>
+          <strong>Ours fits 65" × 36" — covers your whole grill zone.</strong>
+          <span>Theirs is undersized and leaves your deck exposed.</span>
+        </div>
       </div>
+      <div class="fs-vs-point">
+        <div class="fs-vs-num">3</div>
+        <div>
+          <strong>Non-slip weighted design stays exactly in place.</strong>
+          <span>Theirs slides around and bunches up constantly.</span>
+        </div>
+      </div>
+    </div>
+    <!-- Comparison Table -->
+    <div class="fs-table-wrap">
+      <table class="fs-table">
+        <thead>
+          <tr>
+            <th class="fs-th-feature"></th>
+            <th class="fs-th-us">Flame Shield</th>
+            <th class="fs-th-them">Other Brands</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Material</td><td class="fs-td-us">✅ Heavy-duty PVC</td><td class="fs-td-them">❌ Thin, cheap plastic</td></tr>
+          <tr><td>Size</td><td class="fs-td-us">✅ 65" × 36"</td><td class="fs-td-them">❌ Too small</td></tr>
+          <tr><td>Non-slip</td><td class="fs-td-us">✅ Stays in place</td><td class="fs-td-them">❌ Slides constantly</td></tr>
+          <tr><td>All-weather</td><td class="fs-td-us">✅ Rain, UV &amp; heat</td><td class="fs-td-them">❌ Fades &amp; warps</td></tr>
+          <tr><td>Easy clean</td><td class="fs-td-us">✅ 30-second rinse</td><td class="fs-td-them">❌ Grease soaks in</td></tr>
+          <tr><td>Guarantee</td><td class="fs-td-us">✅ 30-day refund</td><td class="fs-td-them">❌ No returns</td></tr>
+          <tr><td>Warranty</td><td class="fs-td-us">✅ 1 Year</td><td class="fs-td-them">❌ None</td></tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </section>
 
-<!-- ══ FEATURE HIGHLIGHTS ══ -->
-<section class="ds-features">
-  <div class="ds-section-inner">
-    <p class="ds-eyebrow">BUILT FOR GRILLMASTERS</p>
-    <h2 class="ds-section-title">Engineered for Every Backyard</h2>
-    <div class="ds-features-grid">
-      <div class="ds-feat-card">
-        <img src="{{ 'gs-info-1.jpg' | asset_url }}" alt="Weather resistant" class="ds-feat-img" loading="lazy" />
-        <div class="ds-feat-content">
+<!-- ══ FEATURES ══ -->
+<section class="fs-features">
+  <div class="fs-sec-inner">
+    <p class="fs-eyebrow-dark">ENGINEERED FOR GRILLMASTERS</p>
+    <h2 class="fs-sec-h2">Every Detail. Designed for Your Deck.</h2>
+    <div class="fs-feat-grid">
+      <div class="fs-feat-row">
+        <img src="{{ 'gs-info-1.jpg' | asset_url }}" alt="All-season durability" class="fs-feat-img" loading="lazy" />
+        <div class="fs-feat-text">
           <h3>🌧️ All-Season Durability</h3>
-          <p>Made from 100% weather-resistant PVC that withstands rain, intense UV, and high heat — season after season without warping or cracking.</p>
+          <p>Made from 100% weather-resistant PVC that withstands rain, UV, and high heat — season after season without warping or cracking.</p>
         </div>
       </div>
-      <div class="ds-feat-card">
-        <img src="{{ 'gs-info-2.jpg' | asset_url }}" alt="Deck protection" class="ds-feat-img" loading="lazy" />
-        <div class="ds-feat-content">
+      <div class="fs-feat-row fs-feat-row--flip">
+        <img src="{{ 'gs-info-2.jpg' | asset_url }}" alt="Total deck protection" class="fs-feat-img" loading="lazy" />
+        <div class="fs-feat-text">
           <h3>🛡️ Total Deck Protection</h3>
-          <p>Shields wood, composite, and concrete surfaces from grease drips, sauce spills, and coal stains. Your deck stays pristine all BBQ season.</p>
+          <p>Shields wood, composite, and concrete from grease, spills, and stains. Your deck stays spotless all BBQ season long.</p>
         </div>
       </div>
-      <div class="ds-feat-card">
-        <img src="{{ 'gs-info-3.jpg' | asset_url }}" alt="Non-slip" class="ds-feat-img" loading="lazy" />
-        <div class="ds-feat-content">
-          <h3>🔒 Stays Exactly in Place</h3>
-          <p>The mat's substantial weight and non-slip surface keep it locked under your grill — no sliding, no shifting, no adjusting mid-cookout.</p>
+      <div class="fs-feat-row">
+        <img src="{{ 'gs-info-3.jpg' | asset_url }}" alt="Non-slip" class="fs-feat-img" loading="lazy" />
+        <div class="fs-feat-text">
+          <h3>🔒 Locked in Place</h3>
+          <p>The mat's substantial weight and non-slip surface keep it exactly where you put it — no sliding, no adjusting mid-cookout.</p>
         </div>
       </div>
-      <div class="ds-feat-card">
-        <img src="{{ 'gs-info-4.jpg' | asset_url }}" alt="Easy clean" class="ds-feat-img" loading="lazy" />
-        <div class="ds-feat-content">
+      <div class="fs-feat-row fs-feat-row--flip">
+        <img src="{{ 'gs-info-4.jpg' | asset_url }}" alt="Easy clean" class="fs-feat-img" loading="lazy" />
+        <div class="fs-feat-text">
           <h3>💧 30-Second Cleanup</h3>
-          <p>Wipe off solids, then blast with a garden hose. Grease and grime rinse away instantly — back to like-new in under a minute.</p>
+          <p>Wipe off solids, blast with a hose, and it's back to like-new in under 30 seconds. No scrubbing, no special products.</p>
         </div>
       </div>
     </div>
@@ -277,356 +257,322 @@
 </section>
 
 <!-- ══ HOW IT WORKS ══ -->
-<section class="ds-how">
-  <div class="ds-section-inner">
-    <p class="ds-eyebrow">SIMPLE. EFFECTIVE.</p>
-    <h2 class="ds-section-title">Set Up in 3 Seconds. Grill All Season.</h2>
-    <div class="ds-steps">
-      <div class="ds-step">
-        <div class="ds-step-num">01</div>
-        <h3 class="ds-step-title">Unroll &amp; Place</h3>
-        <p class="ds-step-desc">Simply unroll the mat and position it under your grill. No tools, no installation, no drilling — just place and grill.</p>
-      </div>
-      <div class="ds-step">
-        <div class="ds-step-num">02</div>
-        <h3 class="ds-step-title">Grill &amp; Enjoy</h3>
-        <p class="ds-step-desc">Fire up the grill and cook with confidence. Grease, drips, and ash land on the mat — not your deck.</p>
-      </div>
-      <div class="ds-step">
-        <div class="ds-step-num">03</div>
-        <h3 class="ds-step-title">Rinse &amp; Store</h3>
-        <p class="ds-step-desc">Hose it down after grilling — clean in under 60 seconds. Roll up and hang using the built-in storage hole.</p>
-      </div>
+<section class="fs-how">
+  <div class="fs-sec-inner">
+    <p class="fs-eyebrow-dark">3 STEPS. THAT'S IT.</p>
+    <h2 class="fs-sec-h2">Set Up in 3 Seconds. Grill All Season.</h2>
+    <div class="fs-steps">
+      <div class="fs-step"><div class="fs-step-n">01</div><h3>Unroll &amp; Place</h3><p>Unroll and place under your grill. No tools. No installation. Done in 3 seconds.</p></div>
+      <div class="fs-step-arrow">→</div>
+      <div class="fs-step"><div class="fs-step-n">02</div><h3>Grill &amp; Enjoy</h3><p>Fire it up. Grease, drips, ash — everything lands on the mat, not your deck.</p></div>
+      <div class="fs-step-arrow">→</div>
+      <div class="fs-step"><div class="fs-step-n">03</div><h3>Rinse &amp; Store</h3><p>Hose it down. Clean in 30 seconds. Roll up and hang using the built-in hook hole.</p></div>
     </div>
   </div>
 </section>
 
-<!-- ══ TESTIMONIALS ══ -->
-<section class="ds-reviews">
-  <div class="ds-section-inner">
-    <p class="ds-eyebrow">REAL REVIEWS</p>
-    <h2 class="ds-section-title">Homeowners Across America Love It</h2>
-    <div class="ds-reviews-grid">
-      <div class="ds-review-card">
-        <div class="ds-rev-stars">★★★★★</div>
-        <p class="ds-rev-text">"I was skeptical at first but this mat is incredible. I spilled an entire drip pan of grease and the deck was completely protected. Rinsed clean in 30 seconds. Ordered two more for my parents."</p>
-        <div class="ds-reviewer"><div class="ds-rev-av">M</div><div><strong>Mike D.</strong><span>Verified Buyer · Austin, TX</span></div></div>
+<!-- ══ REVIEWS ══ -->
+<section class="fs-reviews">
+  <div class="fs-sec-inner">
+    <p class="fs-eyebrow-dark">VERIFIED REVIEWS</p>
+    <h2 class="fs-sec-h2">What Homeowners Are Saying</h2>
+    <div class="fs-rev-summary">
+      <div class="fs-rev-score">4.8</div>
+      <div>
+        <div style="color:#f5a623;font-size:1.4rem;letter-spacing:3px">★★★★★</div>
+        <p>Based on 3,241 reviews · <strong>96%</strong> would recommend</p>
       </div>
-      <div class="ds-review-card">
-        <div class="ds-rev-stars">★★★★★</div>
-        <p class="ds-rev-text">"My composite deck looks exactly the same as it did before BBQ season. Usually it's covered in grease stains by August. This mat is the real deal — worth every penny and then some."</p>
-        <div class="ds-reviewer"><div class="ds-rev-av">S</div><div><strong>Sarah L.</strong><span>Verified Buyer · Charlotte, NC</span></div></div>
-      </div>
-      <div class="ds-review-card">
-        <div class="ds-rev-stars">★★★★★</div>
-        <p class="ds-rev-text">"I've gone through 3 cheap grill mats that cracked, slid around, or discolored my deck worse than before. This one is heavy, stays put, and looks brand new after a full summer of use."</p>
-        <div class="ds-reviewer"><div class="ds-rev-av">J</div><div><strong>James R.</strong><span>Verified Buyer · Denver, CO</span></div></div>
-      </div>
-      <div class="ds-review-card">
-        <div class="ds-rev-stars">★★★★★</div>
-        <p class="ds-rev-text">"The size is perfect — covers my whole grill area plus the side table. The non-slip backing means I've never had to adjust it once. Setup took 10 seconds. Best outdoor purchase of the year."</p>
-        <div class="ds-reviewer"><div class="ds-rev-av">L</div><div><strong>Linda M.</strong><span>Verified Buyer · Seattle, WA</span></div></div>
-      </div>
+    </div>
+    <div class="fs-rev-grid">
+      <div class="fs-rev-card"><div class="fs-rev-stars">★★★★★</div><p>"I spilled an entire drip pan and the deck was completely clean underneath. Rinsed in 30 seconds. Ordered 2 more for my parents immediately."</p><div class="fs-reviewer"><div class="fs-rev-av">M</div><div><strong>Mike D.</strong><span>Verified · Austin, TX</span></div></div></div>
+      <div class="fs-rev-card"><div class="fs-rev-stars">★★★★★</div><p>"My composite deck looks exactly the same as before grilling season. Usually it's covered in stains by August. This mat is worth every single penny."</p><div class="fs-reviewer"><div class="fs-rev-av">S</div><div><strong>Sarah L.</strong><span>Verified · Charlotte, NC</span></div></div></div>
+      <div class="fs-rev-card"><div class="fs-rev-stars">★★★★★</div><p>"I've gone through 3 cheap mats that cracked, slid around, or made things worse. This one is heavy, stays put, and looks brand new after a full summer."</p><div class="fs-reviewer"><div class="fs-rev-av">J</div><div><strong>James R.</strong><span>Verified · Denver, CO</span></div></div></div>
+      <div class="fs-rev-card"><div class="fs-rev-stars">★★★★★</div><p>"Size is perfect — covers my whole grill area. The non-slip backing means I've never had to adjust it. Best outdoor purchase of the year, no question."</p><div class="fs-reviewer"><div class="fs-rev-av">L</div><div><strong>Linda M.</strong><span>Verified · Seattle, WA</span></div></div></div>
     </div>
   </div>
 </section>
 
 <!-- ══ FAQ ══ -->
-<section class="ds-faq">
-  <div class="ds-faq-inner">
-    <p class="ds-eyebrow" style="text-align:center">COMMON QUESTIONS</p>
-    <h2 class="ds-section-title" style="text-align:center">Frequently Asked Questions</h2>
-    <div class="ds-faq-list">
-      <details class="ds-faq-item"><summary class="ds-faq-q"><span>🔥</span> Will this mat melt or warp from grill heat? <svg class="ds-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polyline points="6 9 12 15 18 9"/></svg></summary><p class="ds-faq-a">No. The mat is designed to be placed around the base of the grill, not directly under open flames. It handles radiant heat, hot embers, and UV rays without warping, cracking, or melting.</p></details>
-      <details class="ds-faq-item"><summary class="ds-faq-q"><span>🌧️</span> Can I leave it outside in the rain? <svg class="ds-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polyline points="6 9 12 15 18 9"/></svg></summary><p class="ds-faq-a">Yes — it's 100% weather-resistant PVC. Rain, morning dew, and sun won't damage it. For storage, we recommend rolling it up and hanging it during extended off-season periods.</p></details>
-      <details class="ds-faq-item"><summary class="ds-faq-q"><span>📐</span> Will it fit my grill? <svg class="ds-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polyline points="6 9 12 15 18 9"/></svg></summary><p class="ds-faq-a">At 65" × 36", it accommodates most standard gas grills, charcoal grills, smokers, and griddles. It provides ample coverage around all four sides of a typical grill setup.</p></details>
-      <details class="ds-faq-item"><summary class="ds-faq-q"><span>🏠</span> Is it safe on wood decks? <svg class="ds-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polyline points="6 9 12 15 18 9"/></svg></summary><p class="ds-faq-a">Absolutely. It's specifically designed for wood, composite, and concrete surfaces. The non-slip backing won't scratch or damage your deck — it actually protects the surface from discoloration.</p></details>
-      <details class="ds-faq-item"><summary class="ds-faq-q"><span>💧</span> How do I clean it? <svg class="ds-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polyline points="6 9 12 15 18 9"/></svg></summary><p class="ds-faq-a">Just rinse with a garden hose. For stubborn grease, use a mild dish soap and a soft brush. It dries quickly and is ready to use again within minutes.</p></details>
-      <details class="ds-faq-item"><summary class="ds-faq-q"><span>↩️</span> What if I'm not happy with it? <svg class="ds-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polyline points="6 9 12 15 18 9"/></svg></summary><p class="ds-faq-a">We stand behind every mat with a 30-day money-back guarantee. If you're not satisfied for any reason, contact us and we'll issue a full refund — no hassle, no questions asked.</p></details>
+<section class="fs-faq">
+  <div class="fs-faq-wrap">
+    <div class="fs-faq-left">
+      <p class="fs-eyebrow-dark">GOT QUESTIONS?</p>
+      <h2 class="fs-sec-h2">Frequently Asked<br>Questions</h2>
+    </div>
+    <div class="fs-faq-right">
+      <details class="fs-faq-item"><summary>Will this mat melt from grill heat? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polyline points="6 9 12 15 18 9"/></svg></summary><p>No. It's designed to sit around the base of the grill, not under direct flame. It handles radiant heat, embers, and UV rays without warping, cracking, or melting.</p></details>
+      <details class="fs-faq-item"><summary>Can I leave it outside in the rain? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polyline points="6 9 12 15 18 9"/></svg></summary><p>Yes — 100% weather-resistant PVC. Rain, dew, and sun won't damage it. For off-season storage, roll it up and hang it using the built-in hook hole.</p></details>
+      <details class="fs-faq-item"><summary>Will it fit my grill? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polyline points="6 9 12 15 18 9"/></svg></summary><p>At 65" × 36", it fits most standard gas grills, charcoal grills, smokers, and griddles — with coverage all around the base.</p></details>
+      <details class="fs-faq-item"><summary>Is it safe on wood decks? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polyline points="6 9 12 15 18 9"/></svg></summary><p>Yes. It's specifically designed for wood, composite, and concrete. The backing won't scratch or discolor your deck — it actively protects it.</p></details>
+      <details class="fs-faq-item"><summary>What if I'm not happy? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polyline points="6 9 12 15 18 9"/></svg></summary><p>30-day money-back guarantee. If you're not satisfied for any reason, contact us and we'll issue a full refund immediately — no questions asked.</p></details>
     </div>
   </div>
 </section>
 
 <!-- ══ FOOTER ══ -->
-<footer class="ds-footer">
-  <div class="ds-footer-inner">
-    <div>
-      <p class="ds-footer-brand">{{ shop.name }}</p>
-      <p class="ds-footer-tagline">Protect your deck. Enjoy your grill.</p>
-    </div>
-    <div class="ds-footer-links">
-      <strong>Support</strong>
-      <a href="/pages/contact">Contact Us</a>
-      <a href="/pages/track-order">Track Order</a>
-      <a href="/pages/faq">FAQ</a>
-    </div>
-    <div class="ds-footer-links">
-      <strong>Policies</strong>
-      <a href="/policies/privacy-policy">Privacy Policy</a>
-      <a href="/policies/refund-policy">Refund Policy</a>
-      <a href="/policies/terms-of-service">Terms of Service</a>
-    </div>
+<footer class="fs-footer">
+  <div class="fs-footer-inner">
+    <div><p class="fs-footer-brand">{{ shop.name }}</p><p class="fs-footer-tag">Protect your deck. Enjoy your grill.</p></div>
+    <div class="fs-footer-col"><strong>Support</strong><a href="/pages/contact">Contact Us</a><a href="/pages/track-order">Track Order</a><a href="/pages/faq">FAQ</a></div>
+    <div class="fs-footer-col"><strong>Policies</strong><a href="/policies/privacy-policy">Privacy Policy</a><a href="/policies/refund-policy">Refund Policy</a><a href="/policies/terms-of-service">Terms of Service</a></div>
   </div>
-  <div class="ds-footer-bottom">
-    <p>© {{ 'now' | date: '%Y' }} {{ shop.name }}. All rights reserved.</p>
-    <div class="ds-footer-badges"><span>🔒 SSL Secured</span><span>✅ Verified Store</span><span>🛡️ Buyer Protected</span></div>
-  </div>
+  <div class="fs-footer-bottom"><p>© {{ 'now' | date: '%Y' }} {{ shop.name }}. All rights reserved.</p><div class="fs-footer-badges"><span>🔒 SSL Secured</span><span>✅ Verified Store</span><span>🛡️ Buyer Protected</span></div></div>
 </footer>
 
 <!-- ══ STICKY BAR ══ -->
-<div class="ds-sticky" id="ds-sticky">
-  <div class="ds-sticky-info">
-    <strong>{{ ds.title | truncate: 38 }}</strong>
-    <span id="ds-sticky-price">{{ fv.price | money }}</span>
+<div class="fs-sticky" id="fs-sticky">
+  <div class="fs-sticky-left">
+    <strong>{{ ds.title | truncate: 36 }}</strong>
+    <span id="fs-sticky-price">{{ fv.price | money }}</span>
   </div>
-  <button class="ds-sticky-cta" id="ds-sticky-btn">Add to Cart</button>
+  <button class="fs-sticky-btn" id="fs-sticky-btn">Add to Cart</button>
 </div>
 
 <script>
 (function(){
-  var variants = JSON.parse(document.getElementById('ds-variant-data').textContent);
-  var mainImg  = document.getElementById('ds-main-img');
-  var ctaBtn   = document.getElementById('ds-cta-btn');
-  var stickyBtn= document.getElementById('ds-sticky-btn');
-  var ctaPrice = document.getElementById('ds-cta-price');
-  var priceEl  = document.getElementById('ds-price');
-  var compareEl= document.getElementById('ds-compare');
-  var stickyPr = document.getElementById('ds-sticky-price');
-  var stickyBar= document.getElementById('ds-sticky');
-  var v        = variants[0];
+  var variants = JSON.parse(document.getElementById('fs-variant-data').textContent);
+  var v = variants[0];
+  var mainImg = document.getElementById('fs-main-img');
+  var cta = document.getElementById('fs-cta');
+  var stickyBtn = document.getElementById('fs-sticky-btn');
+  var ctaPrice = document.getElementById('fs-cta-price');
+  var priceEl = document.getElementById('fs-price');
+  var wasEl = document.getElementById('fs-was');
+  var stickyPrice = document.getElementById('fs-sticky-price');
+  var sticky = document.getElementById('fs-sticky');
 
   function fmt(c){ return '$'+(c/100).toFixed(2); }
 
-  function updateUI(){
-    if(!v) return;
-    if(ctaPrice)  ctaPrice.textContent  = fmt(v.price);
-    if(priceEl)   priceEl.textContent   = fmt(v.price);
-    if(stickyPr)  stickyPr.textContent  = fmt(v.price);
-    if(compareEl){
-      if(v.compare_at_price > v.price){ compareEl.textContent=fmt(v.compare_at_price); compareEl.style.display='inline'; }
-      else { compareEl.style.display='none'; }
-    }
-  }
-
   // Thumbnails
-  document.querySelectorAll('.ds-thumb').forEach(function(t){
+  document.querySelectorAll('.fs-thumb').forEach(function(t){
     t.addEventListener('click', function(){
       if(mainImg) mainImg.src = t.dataset.src;
-      document.querySelectorAll('.ds-thumb').forEach(function(x){ x.classList.remove('ds-thumb--active'); });
-      t.classList.add('ds-thumb--active');
+      document.querySelectorAll('.fs-thumb').forEach(function(x){ x.classList.remove('active'); });
+      t.classList.add('active');
     });
   });
 
   // Add to cart
   async function addToCart(){
-    var origHTML = ctaBtn ? ctaBtn.innerHTML : '';
-    if(ctaBtn){ ctaBtn.disabled=true; ctaBtn.textContent='Adding…'; }
+    if(!v){ alert('Product not found. Please refresh.'); return; }
+    var orig = cta ? cta.innerHTML : '';
+    if(cta){ cta.disabled=true; cta.textContent='Adding…'; }
     if(stickyBtn){ stickyBtn.disabled=true; stickyBtn.textContent='Adding…'; }
-    try {
-      if(!v) throw new Error('no variant');
+    try{
       var res = await fetch('/cart/add.js',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({items:[{id:v.id,quantity:1}]})});
-      if(!res.ok){ var e=await res.json().catch(function(){return{};}); throw new Error(e.description||'Cart error'); }
-      // Update cart badge
-      var cartRes = await fetch('/cart.js');
-      var cart    = await cartRes.json();
-      var badge   = document.querySelector('.ds-cart-badge');
+      if(!res.ok){ var e=await res.json().catch(function(){return{};}); throw new Error(e.description||'Error'); }
+      var cart = await fetch('/cart.js').then(function(r){return r.json();});
+      var badge = document.querySelector('.ds-cart-badge');
       if(badge) badge.textContent = cart.item_count;
-      if(ctaBtn){ ctaBtn.disabled=false; ctaBtn.innerHTML='✓ Added to Cart!'; setTimeout(function(){ ctaBtn.innerHTML=origHTML; },2000); }
+      if(cta){ cta.disabled=false; cta.innerHTML='✓ Added to Cart!'; setTimeout(function(){ cta.innerHTML=orig; },2000); }
       if(stickyBtn){ stickyBtn.disabled=false; stickyBtn.textContent='✓ Added!'; setTimeout(function(){ stickyBtn.textContent='Add to Cart'; },2000); }
-      // Open drawer
       document.querySelector('.ds-open-cart') && document.querySelector('.ds-open-cart').click();
     } catch(err){
-      alert('Could not add to cart: '+err.message);
-      if(ctaBtn){ ctaBtn.disabled=false; ctaBtn.innerHTML=origHTML; }
+      alert('Could not add: '+err.message);
+      if(cta){ cta.disabled=false; cta.innerHTML=orig; }
       if(stickyBtn){ stickyBtn.disabled=false; stickyBtn.textContent='Add to Cart'; }
     }
   }
-
-  if(ctaBtn)    ctaBtn.addEventListener('click', addToCart);
+  if(cta) cta.addEventListener('click', addToCart);
   if(stickyBtn) stickyBtn.addEventListener('click', addToCart);
 
   // Sticky bar
-  var heroForm = document.querySelector('.ds-form');
-  if(heroForm && stickyBar){
-    var obs=new IntersectionObserver(function(e){ stickyBar.style.transform=e[0].isIntersecting?'translateY(100%)':'translateY(0)'; },{threshold:0.1});
-    obs.observe(heroForm);
+  var hero = document.querySelector('.fs-info');
+  if(hero && sticky){
+    new IntersectionObserver(function(e){ sticky.style.transform = e[0].isIntersecting ? 'translateY(100%)' : 'translateY(0)'; },{threshold:0.05}).observe(hero);
   }
 
-  // Countdown
-  var timerEl=document.getElementById('ds-timer');
-  if(timerEl){
-    var secs=11*3600+47*60+2;
-    setInterval(function(){
-      secs=Math.max(0,secs-1);
-      var h=Math.floor(secs/3600),m=Math.floor((secs%3600)/60),s=secs%60;
-      timerEl.textContent=[h,m,s].map(function(n){return n.toString().padStart(2,'0');}).join(':');
-    },1000);
-  }
+  // Timer
+  var timerEl = document.getElementById('fs-timer');
+  if(timerEl){ var s=11*3600+47*12; setInterval(function(){ s=Math.max(0,s-1); var h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sc=s%60; timerEl.textContent=[h,m,sc].map(function(n){return n.toString().padStart(2,'0');}).join(':'); },1000); }
 
-  updateUI();
+  // Gallery sticky on scroll
+  var gallery = document.getElementById('fs-gallery');
+  var info = document.querySelector('.fs-info');
+  if(gallery && info && window.innerWidth >= 780){
+    gallery.style.position = 'sticky';
+    gallery.style.top = '20px';
+    gallery.style.alignSelf = 'flex-start';
+  }
 })();
 </script>
 
 <style>
+/* ── Fonts ── */
+.fs-title, .fs-vs-headline, .fs-sec-h2, .fs-footer-brand { font-family: 'Playfair Display', Georgia, serif; }
+.fs-hero *, .fs-reviews *, .fs-faq *, .fs-vs *, .fs-features *, .fs-how *, .fs-ticker, .fs-announce, .fs-sticky { font-family: 'Inter', -apple-system, sans-serif; }
+
+/* ── Announce ── */
+.fs-announce { background: #1a1a1a; color: rgba(255,255,255,0.85); font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; padding: 10px 0; overflow: hidden; white-space: nowrap; }
+.fs-announce-track { display: inline-flex; align-items: center; gap: 20px; animation: fs-tick 32s linear infinite; }
+.fs-sep { color: #e85d04; }
+@keyframes fs-tick { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
 /* ── Hero ── */
-.ds-hero{background:#f8f8f6;padding:40px 20px 56px}
-.ds-hero-layout{max-width:1080px;margin:0 auto;display:grid;grid-template-columns:1fr;gap:40px}
-@media(min-width:780px){.ds-hero-layout{grid-template-columns:1.1fr 1fr;align-items:start;gap:56px}}
+.fs-hero { background: #fff; padding: 48px 24px 64px; }
+.fs-hero-wrap { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1.05fr 1fr; gap: 64px; align-items: start; }
+@media(max-width: 860px) { .fs-hero-wrap { grid-template-columns: 1fr; gap: 40px; } }
 
 /* ── Gallery ── */
-.ds-gallery-main{position:relative;border-radius:16px;overflow:hidden;background:#fff;box-shadow:0 4px 24px rgba(0,0,0,0.08);margin-bottom:12px}
-.ds-main-img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block}
-.ds-award-badge{position:absolute;top:14px;left:14px;background:#e85d04;color:#fff;font-size:0.68rem;font-weight:800;padding:6px 14px;border-radius:99px;letter-spacing:0.06em}
-.ds-thumbs{display:flex;gap:8px;flex-wrap:wrap}
-.ds-thumb{width:72px;height:72px;border-radius:10px;overflow:hidden;border:2px solid transparent;background:#fff;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.06);padding:0;transition:border-color 0.15s}
-.ds-thumb img{width:100%;height:100%;object-fit:cover}
-.ds-thumb--active{border-color:#e85d04;box-shadow:0 2px 8px rgba(232,93,4,0.25)}
-.ds-thumb:hover{border-color:#e85d04}
+.fs-gallery { position: sticky; top: 20px; align-self: flex-start; }
+.fs-gallery-main { position: relative; border-radius: 20px; overflow: hidden; background: #f8f8f6; margin-bottom: 12px; box-shadow: 0 4px 28px rgba(0,0,0,0.08); }
+.fs-gallery-main img { width: 100%; aspect-ratio: 1/1; object-fit: cover; display: block; }
+.fs-badge { position: absolute; top: 16px; left: 16px; background: #e85d04; color: #fff; font-size: 0.68rem; font-weight: 800; padding: 6px 16px; border-radius: 99px; letter-spacing: 0.06em; }
+.fs-thumbs { display: flex; gap: 8px; flex-wrap: wrap; }
+.fs-thumb { width: 76px; height: 76px; border-radius: 12px; overflow: hidden; border: 2.5px solid transparent; background: #f8f8f6; cursor: pointer; padding: 0; transition: border-color 0.15s, box-shadow 0.15s; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+.fs-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.fs-thumb.active, .fs-thumb:hover { border-color: #e85d04; box-shadow: 0 2px 12px rgba(232,93,4,0.25); }
 
-/* ── Form ── */
-.ds-awards-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
-.ds-award-pill{background:#fff8f0;border:1px solid #fcd9b0;color:#8b4000;font-size:0.72rem;font-weight:700;padding:5px 12px;border-radius:99px}
-.ds-proof-badge{display:inline-flex;align-items:center;gap:8px;background:#fff8f0;border:1px solid #fcd9b0;color:#8b4000;font-size:0.78rem;font-weight:600;padding:6px 14px;border-radius:99px;margin-bottom:14px}
-.ds-pulse{width:8px;height:8px;border-radius:50%;background:#e85d04;animation:ds-pulse 1.5s ease-in-out infinite;flex-shrink:0}
-@keyframes ds-pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.4);opacity:0.7}}
-.ds-stars-row{display:flex;align-items:center;gap:8px;margin-bottom:10px}
-.ds-stars{color:#f5a623;font-size:1.1rem;letter-spacing:2px}
-.ds-review-ct{font-size:0.78rem;color:#777}
-.ds-title{font-size:clamp(1.4rem,3vw,1.95rem);font-weight:900;color:#111;margin:0 0 12px;line-height:1.2;letter-spacing:-0.02em}
-.ds-tagline{font-size:0.95rem;color:#555;margin-bottom:18px;line-height:1.6}
-.ds-tagline em{color:#e85d04;font-style:normal;font-weight:700}
-.ds-price-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px}
-.ds-price{font-size:1.9rem;font-weight:900;color:#111}
-.ds-compare{font-size:1.1rem;color:#aaa;text-decoration:line-through}
-.ds-save-badge{background:#e85d04;color:#fff;font-size:0.68rem;font-weight:800;letter-spacing:0.05em;padding:4px 10px;border-radius:99px}
-.ds-installment{font-size:0.8rem;color:#777;margin-bottom:20px}
-.ds-bullets{list-style:none;padding:0;margin:0 0 18px;display:flex;flex-direction:column;gap:8px}
-.ds-bullets li{font-size:0.9rem;color:#333;display:flex;align-items:flex-start;gap:8px;line-height:1.45}
-.ds-bi{font-size:1rem;flex-shrink:0}
-.ds-trust-row{display:flex;gap:6px 16px;flex-wrap:wrap;margin-bottom:18px}
-.ds-trust-item{display:flex;align-items:center;gap:5px;font-size:0.78rem;color:#111;font-weight:600}
-.ds-trust-item svg{color:#e85d04}
-.ds-cta-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:18px 24px;border:none;border-radius:12px;background:linear-gradient(135deg,#bf4500 0%,#e85d04 100%);color:#fff;font-size:1.05rem;font-weight:800;cursor:pointer;letter-spacing:0.01em;box-shadow:0 4px 16px rgba(232,93,4,0.35);transition:transform 0.15s,box-shadow 0.15s}
-.ds-cta-btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 6px 24px rgba(232,93,4,0.45)}
-.ds-cta-btn:disabled{opacity:0.6;cursor:not-allowed}
-.ds-ship-note{font-size:0.8rem;color:#666;text-align:center;margin:10px 0 14px}
-.ds-ship-note strong{color:#111}
-.ds-urgency{display:flex;align-items:center;gap:8px;background:#fff8f0;border:1px solid #fcd9b0;border-radius:10px;padding:10px 16px;font-size:0.8rem;color:#8b4000;margin-bottom:20px}
-.ds-urgency svg{color:#e85d04;flex-shrink:0}
-.ds-urgency strong{color:#c0392b}
-.ds-collapsibles{border-top:1px solid #e8e8e8}
-.ds-detail{border-bottom:1px solid #e8e8e8}
-.ds-det-sum{display:flex;align-items:center;gap:10px;padding:14px 0;cursor:pointer;font-size:0.9rem;font-weight:700;color:#111;list-style:none;user-select:none}
-.ds-det-sum::-webkit-details-marker{display:none}
-.ds-chev{margin-left:auto;transition:transform 0.2s;color:#888}
-.ds-detail[open] .ds-chev{transform:rotate(180deg)}
-.ds-det-body{padding:0 0 14px 28px}
-.ds-det-body p{font-size:0.86rem;color:#555;line-height:1.7}
+/* ── Info / Form ── */
+.fs-info { display: flex; flex-direction: column; gap: 0; }
+.fs-rating-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; font-size: 0.82rem; }
+.fs-stars { color: #f5a623; font-size: 1rem; letter-spacing: 2px; }
+.fs-rating-num { font-weight: 800; color: #111; }
+.fs-sep2 { color: #ccc; }
+.fs-review-link { color: #555; }
+.fs-title { font-size: clamp(1.6rem, 3.5vw, 2.1rem); font-weight: 900; color: #111; line-height: 1.15; margin: 0 0 12px; letter-spacing: -0.02em; }
+.fs-subtitle { font-size: 0.97rem; color: #555; line-height: 1.65; margin-bottom: 20px; }
+.fs-price-block { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 6px; }
+.fs-price { font-size: 2rem; font-weight: 900; color: #111; }
+.fs-was { font-size: 1.1rem; color: #bbb; text-decoration: line-through; }
+.fs-save-pill { background: #e85d04; color: #fff; font-size: 0.68rem; font-weight: 800; padding: 4px 12px; border-radius: 99px; letter-spacing: 0.05em; }
+.fs-shopify-pay { font-size: 0.8rem; color: #888; margin-bottom: 22px; }
+.fs-bullets { list-style: none; padding: 0; margin: 0 0 24px; display: flex; flex-direction: column; gap: 10px; }
+.fs-bullets li { display: flex; align-items: flex-start; gap: 10px; font-size: 0.9rem; color: #333; line-height: 1.45; }
+.fs-bullets svg { color: #e85d04; flex-shrink: 0; margin-top: 1px; }
+.fs-cta { width: 100%; padding: 18px; background: linear-gradient(135deg, #bf4500, #e85d04); color: #fff; border: none; border-radius: 14px; font-size: 1.05rem; font-weight: 800; cursor: pointer; letter-spacing: 0.01em; box-shadow: 0 6px 20px rgba(232,93,4,0.35); transition: transform 0.15s, box-shadow 0.15s; margin-bottom: 16px; }
+.fs-cta:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(232,93,4,0.45); }
+.fs-cta:disabled { opacity: 0.65; cursor: not-allowed; }
+.fs-stock-wrap { margin-bottom: 20px; }
+.fs-stock-bar { height: 6px; background: #f0f0f0; border-radius: 99px; overflow: hidden; margin-bottom: 6px; }
+.fs-stock-fill { height: 100%; background: linear-gradient(90deg, #e85d04, #ff7c2a); border-radius: 99px; }
+.fs-stock-text { font-size: 0.78rem; color: #c0392b; font-weight: 700; }
+.fs-guarantee { display: flex; align-items: flex-start; gap: 14px; background: #fff8f0; border: 1px solid #fcd9b0; border-radius: 14px; padding: 16px 18px; margin-bottom: 20px; }
+.fs-guarantee svg { color: #e85d04; flex-shrink: 0; margin-top: 2px; }
+.fs-guarantee strong { display: block; font-size: 0.9rem; color: #111; margin-bottom: 3px; }
+.fs-guarantee span { font-size: 0.8rem; color: #888; }
+.fs-trust { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid #f0f0f0; }
+.fs-trust-item { display: flex; align-items: center; gap: 6px; font-size: 0.78rem; font-weight: 600; color: #444; }
+.fs-trust-item svg { color: #e85d04; }
+.fs-accordions { display: flex; flex-direction: column; }
+.fs-acc { border-top: 1px solid #eee; }
+.fs-acc:last-child { border-bottom: 1px solid #eee; }
+.fs-acc-q { display: flex; align-items: center; justify-content: space-between; padding: 15px 0; cursor: pointer; font-size: 0.9rem; font-weight: 700; color: #111; list-style: none; user-select: none; }
+.fs-acc-q::-webkit-details-marker { display: none; }
+.fs-acc[open] .fs-acc-q svg { transform: rotate(180deg); }
+.fs-acc-q svg { transition: transform 0.2s; flex-shrink: 0; color: #888; }
+.fs-acc-a { font-size: 0.86rem; color: #666; line-height: 1.7; padding: 0 0 16px; }
 
-/* ── Video section ── */
-.ds-video-section{padding:72px 20px;background:#111}
-.ds-video-inner{max-width:960px;margin:0 auto}
-.ds-video-section .ds-eyebrow{color:#e85d04}
-.ds-video-section .ds-section-title{margin-bottom:32px}
-.ds-videos-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
-.ds-video-wrap{border-radius:16px;overflow:hidden;background:#000;box-shadow:0 8px 40px rgba(0,0,0,0.5)}
-.ds-video-wrap video,.ds-video-wrap iframe{display:block;width:100%;height:auto;max-height:75vh;border:none;object-fit:contain}
-.ds-video-wrap iframe{aspect-ratio:16/9;height:auto}
+/* ── Videos ── */
+.fs-videos-section { padding: 72px 20px; background: #111; }
+.fs-vgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+.fs-vwrap { border-radius: 16px; overflow: hidden; background: #000; box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
+.fs-vwrap video, .fs-vwrap iframe { display: block; width: 100%; height: auto; max-height: 70vh; border: none; object-fit: contain; }
+.fs-vwrap iframe { aspect-ratio: 16/9; height: auto; }
 
 /* ── Ticker ── */
-.ds-ticker-strip{background:#111;color:rgba(255,255,255,0.8);padding:12px 0;overflow:hidden;white-space:nowrap}
-.ds-ticker-track{display:inline-flex;gap:28px;align-items:center;animation:ds-ticker 40s linear infinite;font-size:0.8rem}
-.ds-tsep{color:#e85d04;font-size:0.7rem}
-@keyframes ds-ticker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.fs-ticker { background: #111; color: rgba(255,255,255,0.75); padding: 14px 0; overflow: hidden; white-space: nowrap; border-top: 1px solid #222; }
+.fs-ticker-track { display: inline-flex; gap: 32px; align-items: center; animation: fs-tick 38s linear infinite; font-size: 0.82rem; }
+.fs-tsep { color: #e85d04; font-size: 0.7rem; }
 
 /* ── VS Section ── */
-.ds-vs-section{padding:72px 20px;background:#111;color:#fff}
-.ds-vs-section .ds-eyebrow{color:#e85d04}
-.ds-vs-section .ds-section-title{color:#fff;margin-bottom:48px}
-.ds-vs-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:860px;margin:0 auto}
-@media(max-width:640px){.ds-vs-grid{grid-template-columns:1fr}}
-.ds-vs-card{border-radius:20px;overflow:hidden;border:1px solid rgba(255,255,255,0.1)}
-.ds-vs-us{border-color:#e85d04;box-shadow:0 0 0 2px #e85d04}
-.ds-vs-header{padding:14px 24px;font-size:0.85rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;background:#e85d04;color:#fff;text-align:center}
-.ds-vs-header--them{background:#2a2a2a;color:rgba(255,255,255,0.5)}
-.ds-vs-list{list-style:none;padding:20px 24px;display:flex;flex-direction:column;gap:10px;background:#1a1a1a}
-.ds-vs-win{font-size:0.88rem;color:#fff;font-weight:500}
-.ds-vs-lose{font-size:0.88rem;color:rgba(255,255,255,0.4)}
-
-/* ── Section shared ── */
-.ds-section-inner{max-width:1080px;margin:0 auto}
-.ds-eyebrow{font-size:0.68rem;font-weight:800;letter-spacing:0.14em;color:#e85d04;text-transform:uppercase;margin-bottom:8px}
-.ds-section-title{font-size:clamp(1.6rem,4vw,2.4rem);font-weight:900;color:#111;letter-spacing:-0.03em;margin-bottom:40px;line-height:1.15}
+.fs-vs { padding: 80px 24px; background: #fafaf8; }
+.fs-eyebrow-dark { font-size: 0.68rem; font-weight: 800; letter-spacing: 0.14em; color: #e85d04; text-transform: uppercase; margin-bottom: 10px; }
+.fs-vs-headline { font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 900; color: #111; line-height: 1.2; margin-bottom: 48px; }
+.fs-vs-headline em { color: #e85d04; font-style: normal; }
+.fs-vs-points { display: flex; flex-direction: column; gap: 28px; margin-bottom: 56px; }
+.fs-vs-point { display: flex; align-items: flex-start; gap: 20px; }
+.fs-vs-num { width: 40px; height: 40px; border-radius: 50%; background: #e85d04; color: #fff; font-size: 1rem; font-weight: 900; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.fs-vs-point strong { display: block; font-size: 1rem; color: #111; margin-bottom: 4px; }
+.fs-vs-point span { font-size: 0.9rem; color: #777; }
+.fs-table-wrap { overflow-x: auto; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.06); }
+.fs-table { width: 100%; border-collapse: collapse; background: #fff; font-size: 0.9rem; }
+.fs-table th, .fs-table td { padding: 14px 20px; text-align: left; border-bottom: 1px solid #f0f0f0; }
+.fs-th-feature { font-weight: 600; color: #888; background: #fafaf8; }
+.fs-th-us { background: #fff5f0; color: #e85d04; font-weight: 800; font-size: 0.85rem; letter-spacing: 0.04em; text-transform: uppercase; }
+.fs-th-them { background: #f8f8f8; color: #bbb; font-weight: 700; font-size: 0.85rem; letter-spacing: 0.04em; text-transform: uppercase; }
+.fs-td-us { background: #fffbf9; font-weight: 600; color: #111; }
+.fs-td-them { color: #bbb; }
+.fs-table tbody tr:last-child td { border-bottom: none; }
 
 /* ── Features ── */
-.ds-features{padding:72px 20px;background:#fff}
-.ds-features-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:28px}
-@media(max-width:640px){.ds-features-grid{grid-template-columns:1fr}}
-.ds-feat-card{border-radius:16px;overflow:hidden;border:1px solid #eee;background:#f8f8f6}
-.ds-feat-img{width:100%;aspect-ratio:4/3;object-fit:cover}
-.ds-feat-content{padding:20px}
-.ds-feat-content h3{font-size:1rem;font-weight:800;color:#111;margin-bottom:8px}
-.ds-feat-content p{font-size:0.86rem;color:#666;line-height:1.65}
+.fs-features { padding: 80px 24px; background: #fff; }
+.fs-sec-h2 { font-size: clamp(1.7rem, 4vw, 2.4rem); font-weight: 900; color: #111; line-height: 1.15; margin-bottom: 48px; letter-spacing: -0.03em; }
+.fs-feat-grid { display: flex; flex-direction: column; gap: 64px; }
+.fs-feat-row { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
+.fs-feat-row--flip { direction: rtl; }
+.fs-feat-row--flip > * { direction: ltr; }
+@media(max-width: 700px) { .fs-feat-row, .fs-feat-row--flip { grid-template-columns: 1fr; direction: ltr; gap: 24px; } }
+.fs-feat-img { width: 100%; border-radius: 20px; object-fit: cover; box-shadow: 0 4px 24px rgba(0,0,0,0.08); }
+.fs-feat-text h3 { font-size: 1.3rem; font-weight: 800; color: #111; margin-bottom: 14px; }
+.fs-feat-text p { font-size: 0.95rem; color: #666; line-height: 1.7; }
 
-/* ── How it works ── */
-.ds-how{padding:72px 20px;background:#f8f8f6}
-.ds-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:40px;counter-reset:step}
-@media(max-width:640px){.ds-steps{grid-template-columns:1fr}}
-.ds-step{text-align:center;padding:32px 24px;background:#fff;border-radius:20px;border:1px solid #eee;box-shadow:0 2px 12px rgba(0,0,0,0.04)}
-.ds-step-num{font-size:2.5rem;font-weight:900;color:#ffe0cc;margin-bottom:12px;line-height:1}
-.ds-step-title{font-size:1.05rem;font-weight:800;color:#111;margin-bottom:10px}
-.ds-step-desc{font-size:0.88rem;color:#666;line-height:1.65}
+/* ── How ── */
+.fs-how { padding: 80px 24px; background: #f8f8f6; }
+.fs-steps { display: flex; align-items: flex-start; gap: 24px; flex-wrap: wrap; }
+.fs-step { flex: 1; min-width: 200px; text-align: center; background: #fff; border-radius: 20px; padding: 36px 28px; border: 1px solid #eee; box-shadow: 0 2px 12px rgba(0,0,0,0.04); }
+.fs-step-n { font-size: 3rem; font-weight: 900; color: #f5d0bc; line-height: 1; margin-bottom: 16px; font-family: 'Playfair Display', serif; }
+.fs-step h3 { font-size: 1.05rem; font-weight: 800; color: #111; margin-bottom: 10px; }
+.fs-step p { font-size: 0.88rem; color: #777; line-height: 1.65; }
+.fs-step-arrow { font-size: 1.5rem; color: #e85d04; align-self: center; flex-shrink: 0; }
+@media(max-width: 640px) { .fs-step-arrow { display: none; } }
 
 /* ── Reviews ── */
-.ds-reviews{padding:72px 20px;background:#fff}
-.ds-reviews-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}
-@media(max-width:640px){.ds-reviews-grid{grid-template-columns:1fr}}
-.ds-review-card{background:#f8f8f6;border-radius:16px;padding:28px 24px;border:1px solid #eee}
-.ds-rev-stars{color:#f5a623;font-size:1.1rem;letter-spacing:2px;margin-bottom:14px}
-.ds-rev-text{font-size:0.9rem;color:#333;line-height:1.7;margin-bottom:20px;font-style:italic}
-.ds-reviewer{display:flex;align-items:center;gap:12px}
-.ds-rev-av{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#bf4500,#e85d04);color:#fff;font-weight:800;font-size:1rem;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.ds-reviewer strong{display:block;font-size:0.88rem;color:#111}
-.ds-reviewer span{font-size:0.75rem;color:#888}
+.fs-reviews { padding: 80px 24px; background: #fff; }
+.fs-rev-summary { display: flex; align-items: center; gap: 20px; margin-bottom: 40px; padding: 24px; background: #f8f8f6; border-radius: 16px; border: 1px solid #eee; }
+.fs-rev-score { font-size: 3.5rem; font-weight: 900; color: #111; font-family: 'Playfair Display', serif; line-height: 1; }
+.fs-rev-summary p { font-size: 0.85rem; color: #777; margin-top: 4px; }
+.fs-rev-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 20px; }
+@media(max-width: 640px) { .fs-rev-grid { grid-template-columns: 1fr; } }
+.fs-rev-card { background: #f8f8f6; border-radius: 16px; padding: 28px; border: 1px solid #eee; }
+.fs-rev-stars { color: #f5a623; font-size: 1rem; letter-spacing: 2px; margin-bottom: 14px; }
+.fs-rev-card p { font-size: 0.9rem; color: #444; line-height: 1.7; font-style: italic; margin-bottom: 20px; }
+.fs-reviewer { display: flex; align-items: center; gap: 12px; }
+.fs-rev-av { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #bf4500, #e85d04); color: #fff; font-weight: 800; font-size: 1rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.fs-reviewer strong { display: block; font-size: 0.88rem; color: #111; }
+.fs-reviewer span { font-size: 0.75rem; color: #aaa; }
 
 /* ── FAQ ── */
-.ds-faq{padding:72px 20px;background:#f8f8f6}
-.ds-faq-inner{max-width:720px;margin:0 auto}
-.ds-faq-list{display:flex;flex-direction:column;gap:0}
-.ds-faq-item{border:1px solid #e0e0e0;border-radius:12px;margin-bottom:10px;overflow:hidden;background:#fff}
-.ds-faq-item[open]{background:#fff8f0}
-.ds-faq-q{display:flex;align-items:center;gap:10px;padding:18px 20px;cursor:pointer;font-size:0.93rem;font-weight:700;color:#111;list-style:none;user-select:none}
-.ds-faq-q::-webkit-details-marker{display:none}
-.ds-faq-q svg{margin-left:auto;transition:transform 0.2s}
-.ds-faq-item[open] .ds-faq-q svg{transform:rotate(180deg)}
-.ds-faq-a{padding:0 20px 18px 50px;font-size:0.88rem;color:#555;line-height:1.7;margin:0}
+.fs-faq { padding: 80px 24px; background: #f8f8f6; }
+.fs-faq-wrap { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1.6fr; gap: 80px; align-items: start; }
+@media(max-width: 700px) { .fs-faq-wrap { grid-template-columns: 1fr; gap: 32px; } }
+.fs-faq-item { border-bottom: 1px solid #e0e0e0; padding: 0; }
+.fs-faq-item summary { display: flex; align-items: center; justify-content: space-between; padding: 18px 0; cursor: pointer; font-size: 0.93rem; font-weight: 700; color: #111; list-style: none; user-select: none; gap: 12px; }
+.fs-faq-item summary::-webkit-details-marker { display: none; }
+.fs-faq-item svg { flex-shrink: 0; color: #aaa; transition: transform 0.2s; }
+.fs-faq-item[open] svg { transform: rotate(180deg); }
+.fs-faq-item p { font-size: 0.88rem; color: #666; line-height: 1.7; padding: 0 0 18px; }
 
 /* ── Footer ── */
-.ds-footer{background:#111;color:rgba(255,255,255,0.7);padding:56px 24px 24px}
-.ds-footer-inner{max-width:1080px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr;gap:40px;margin-bottom:40px}
-@media(max-width:640px){.ds-footer-inner{grid-template-columns:1fr;gap:32px}}
-.ds-footer-brand{font-size:1.4rem;font-weight:900;color:#fff;letter-spacing:-0.02em;margin-bottom:8px}
-.ds-footer-tagline{font-size:0.85rem;color:rgba(255,255,255,0.45)}
-.ds-footer-links{display:flex;flex-direction:column;gap:0}
-.ds-footer-links strong{font-size:0.78rem;font-weight:700;color:#e85d04;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px}
-.ds-footer-links a{font-size:0.85rem;color:rgba(255,255,255,0.55);padding:4px 0;transition:color 0.15s}
-.ds-footer-links a:hover{color:#e85d04}
-.ds-footer-bottom{max-width:1080px;margin:0 auto;border-top:1px solid rgba(255,255,255,0.08);padding-top:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
-.ds-footer-bottom p{font-size:0.78rem;color:rgba(255,255,255,0.35)}
-.ds-footer-badges{display:flex;gap:16px;font-size:0.75rem;color:rgba(255,255,255,0.45)}
+.fs-footer { background: #111; color: rgba(255,255,255,0.65); padding: 56px 24px 24px; }
+.fs-footer-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; margin-bottom: 40px; }
+@media(max-width: 640px) { .fs-footer-inner { grid-template-columns: 1fr; gap: 32px; } }
+.fs-footer-brand { font-size: 1.5rem; font-weight: 900; color: #fff; margin-bottom: 8px; }
+.fs-footer-tag { font-size: 0.85rem; color: rgba(255,255,255,0.4); }
+.fs-footer-col { display: flex; flex-direction: column; gap: 0; }
+.fs-footer-col strong { font-size: 0.75rem; font-weight: 700; color: #e85d04; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px; }
+.fs-footer-col a { font-size: 0.85rem; color: rgba(255,255,255,0.5); padding: 4px 0; transition: color 0.15s; }
+.fs-footer-col a:hover { color: #e85d04; }
+.fs-footer-bottom { max-width: 1100px; margin: 0 auto; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+.fs-footer-bottom p { font-size: 0.78rem; color: rgba(255,255,255,0.3); }
+.fs-footer-badges { display: flex; gap: 16px; font-size: 0.75rem; color: rgba(255,255,255,0.4); }
 
-/* ── Sticky bar ── */
-.ds-sticky{position:fixed;bottom:0;left:0;right:0;z-index:500;background:#fff;border-top:1px solid #e0e0e0;padding:12px 20px;display:flex;align-items:center;gap:16px;box-shadow:0 -4px 16px rgba(0,0,0,0.1);transform:translateY(100%);transition:transform 0.3s ease}
-.ds-sticky-info{flex:1}
-.ds-sticky-info strong{font-size:0.85rem;color:#111;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px}
-.ds-sticky-info span{font-size:1rem;font-weight:800;color:#e85d04}
-.ds-sticky-cta{background:linear-gradient(135deg,#bf4500,#e85d04);color:#fff;border:none;border-radius:10px;padding:12px 24px;font-size:0.9rem;font-weight:800;cursor:pointer;white-space:nowrap;flex-shrink:0}
-@media(min-width:780px){.ds-sticky{display:none}}
+/* ── Sticky ── */
+.fs-sticky { position: fixed; bottom: 0; left: 0; right: 0; z-index: 600; background: #fff; border-top: 1px solid #e5e5e5; box-shadow: 0 -4px 20px rgba(0,0,0,0.1); padding: 12px 20px; display: flex; align-items: center; gap: 16px; transform: translateY(100%); transition: transform 0.3s ease; }
+.fs-sticky-left { flex: 1; }
+.fs-sticky-left strong { display: block; font-size: 0.85rem; color: #111; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 220px; }
+.fs-sticky-left span { font-size: 1rem; font-weight: 900; color: #e85d04; }
+.fs-sticky-btn { background: linear-gradient(135deg, #bf4500, #e85d04); color: #fff; border: none; border-radius: 10px; padding: 12px 28px; font-size: 0.9rem; font-weight: 800; cursor: pointer; white-space: nowrap; flex-shrink: 0; }
+@media(min-width: 860px) { .fs-sticky { display: none; } }
+
+/* ── Shared ── */
+.fs-sec-inner { max-width: 1100px; margin: 0 auto; }
+.fs-eyebrow { font-size: 0.68rem; font-weight: 800; letter-spacing: 0.14em; color: #e85d04; text-transform: uppercase; margin-bottom: 10px; }
 </style>
 
 {% schema %}
 {
-  "name": "DeckShield Product Hero",
+  "name": "Flame Shield Product Hero",
   "settings": []
 }
 {% endschema %}
