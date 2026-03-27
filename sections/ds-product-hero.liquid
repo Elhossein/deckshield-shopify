@@ -116,96 +116,88 @@
 </section>
 
 <!-- ══ VIDEOS ══ -->
-{%- assign ds_videos = '' | split: '' -%}
+{%- assign vid_idx = 0 -%}
 {%- for media in ds.media -%}
   {%- if media.media_type == 'video' or media.media_type == 'external_video' -%}
-    {%- assign ds_videos = ds_videos | concat: media -%}
+    {%- assign vid_idx = vid_idx | plus: 1 -%}
   {%- endif -%}
 {%- endfor -%}
-{%- if ds_videos.size > 0 -%}
+
+{%- if vid_idx > 0 -%}
 <section class="fs-vid-section">
   <div class="fs-vid-inner">
     <p class="fs-eyebrow-dark">SEE IT IN ACTION</p>
     <h2 class="fs-sec-h2" style="margin-bottom:40px">Watch How It Works</h2>
 
-    <!-- Featured first video — large, rounded, full-width -->
-    {%- assign fv_media = ds_videos[0] -%}
-    <div class="fs-vid-featured">
-      {%- if fv_media.media_type == 'video' -%}
-        <video controls autoplay muted loop playsinline preload="auto" poster="{{ fv_media.preview_image | image_url: width: 1200 }}">
-          {%- for src in fv_media.sources -%}<source src="{{ src.url }}" type="{{ src.mime_type }}">{%- endfor -%}
-        </video>
-      {%- elsif fv_media.media_type == 'external_video' and fv_media.host == 'youtube' -%}
-        <iframe src="https://www.youtube.com/embed/{{ fv_media.external_id }}?autoplay=1&mute=1&loop=1&rel=0" frameborder="0" allowfullscreen allow="autoplay"></iframe>
-      {%- endif -%}
-    </div>
+    {%- assign vid_n = 0 -%}
+    {%- for media in ds.media -%}
+      {%- if media.media_type == 'video' or media.media_type == 'external_video' -%}
 
-    <!-- Remaining videos — horizontal scroll row of cards -->
-    {%- if ds_videos.size > 1 -%}
-    <div class="fs-vid-row" id="fs-vid-row">
-      {%- for media in ds_videos -%}
-        {%- unless forloop.first -%}
-        <div class="fs-vid-card" data-idx="{{ forloop.index0 }}">
-          <div class="fs-vid-thumb">
-            <img src="{{ media.preview_image | image_url: width: 400 }}" alt="Video {{ forloop.index }}" loading="lazy" />
-            <div class="fs-vid-play">
-              <svg viewBox="0 0 24 24" fill="white" width="32" height="32"><circle cx="12" cy="12" r="12" fill="rgba(0,0,0,0.55)"/><polygon points="10,8 18,12 10,16" fill="white"/></svg>
-            </div>
+        {%- if vid_n == 0 -%}
+          <!-- First video: large full-width hero (like Solawave) -->
+          <div class="fs-vid-featured">
+            {%- if media.media_type == 'video' -%}
+              <video controls autoplay muted loop playsinline preload="auto"{% if media.preview_image %} poster="{{ media.preview_image | image_url: width: 1200 }}"{% endif %}>
+                {%- for src in media.sources -%}<source src="{{ src.url }}" type="{{ src.mime_type }}">{%- endfor -%}
+              </video>
+            {%- elsif media.media_type == 'external_video' and media.host == 'youtube' -%}
+              <iframe src="https://www.youtube.com/embed/{{ media.external_id }}?autoplay=1&mute=1&rel=0" frameborder="0" allowfullscreen allow="autoplay; encrypted-media"></iframe>
+            {%- endif -%}
           </div>
-          <p class="fs-vid-label">See It In Action · {{ forloop.index }}</p>
-        </div>
-        {%- endunless -%}
-      {%- endfor -%}
-    </div>
-    {%- endif -%}
+          {%- if vid_idx > 1 -%}<div class="fs-vid-row">{%- endif -%}
+        {%- else -%}
+          <!-- Remaining videos: thumbnail cards in scroll row -->
+          <div class="fs-vid-card"
+            {%- if media.media_type == 'video' -%}
+              {%- for src in media.sources limit: 1 %} data-src="{{ src.url }}" data-mime="{{ src.mime_type }}"{% endfor %}{% if media.preview_image %} data-poster="{{ media.preview_image | image_url: width: 800 }}"{% endif %}
+            {%- elsif media.media_type == 'external_video' and media.host == 'youtube' -%}
+              data-yt="{{ media.external_id }}"
+            {%- endif -%}>
+            <div class="fs-vid-thumb">
+              {%- if media.preview_image -%}
+                <img src="{{ media.preview_image | image_url: width: 400 }}" alt="Video {{ vid_n | plus: 1 }}" loading="lazy">
+              {%- else -%}
+                <div style="width:100%;height:100%;background:#222"></div>
+              {%- endif -%}
+              <div class="fs-vid-play"><svg viewBox="0 0 24 24" width="52" height="52"><circle cx="12" cy="12" r="12" fill="rgba(0,0,0,0.6)"/><polygon points="10,8 18,12 10,16" fill="white"/></svg></div>
+            </div>
+            <p class="fs-vid-label">Video {{ vid_n | plus: 1 }}</p>
+          </div>
+        {%- endif -%}
+
+        {%- assign vid_n = vid_n | plus: 1 -%}
+      {%- endif -%}
+    {%- endfor -%}
+    {%- if vid_idx > 1 -%}</div>{%- endif -%}
   </div>
 
-  <!-- Lightbox for card clicks -->
-  <div class="fs-vid-lb" id="fs-vid-lb" style="display:none">
-    <button class="fs-vid-lb-close" id="fs-vid-lb-close">✕</button>
+  <!-- Lightbox -->
+  <div class="fs-vid-lb" id="fs-vid-lb" aria-hidden="true">
+    <button class="fs-vid-lb-close" id="fs-vid-lb-close" aria-label="Close">✕</button>
     <div class="fs-vid-lb-body" id="fs-vid-lb-body"></div>
   </div>
 
   <script>
   (function(){
-    var videos = [
-      {%- for media in ds_videos -%}
-        {%- unless forloop.first -%}
-        {
-          type: "{{ media.media_type }}",
-          {%- if media.media_type == 'video' -%}
-          sources: [{%- for src in media.sources -%}{ url: "{{ src.url }}", type: "{{ src.mime_type }}" }{% unless forloop.last %},{% endunless %}{%- endfor -%}],
-          poster: "{{ media.preview_image | image_url: width: 800 }}"
-          {%- elsif media.media_type == 'external_video' -%}
-          id: "{{ media.external_id }}", host: "{{ media.host }}"
-          {%- endif -%}
-        }{% unless forloop.last %},{% endunless %}
-        {%- endunless -%}
-      {%- endfor -%}
-    ];
     var lb = document.getElementById('fs-vid-lb');
     var lbBody = document.getElementById('fs-vid-lb-body');
-    var lbClose = document.getElementById('fs-vid-lb-close');
+    function openLb(html){ lbBody.innerHTML = html; lb.setAttribute('aria-hidden','false'); document.body.style.overflow = 'hidden'; }
+    function closeLb(){ lb.setAttribute('aria-hidden','true'); lbBody.innerHTML = ''; document.body.style.overflow = ''; }
+    document.getElementById('fs-vid-lb-close').addEventListener('click', closeLb);
+    lb.addEventListener('click', function(e){ if(e.target === lb) closeLb(); });
     document.querySelectorAll('.fs-vid-card').forEach(function(card){
       card.addEventListener('click', function(){
-        var idx = parseInt(card.dataset.idx) - 1;
-        var v = videos[idx];
-        if(!v) return;
-        lbBody.innerHTML = '';
-        if(v.type === 'video'){
-          var el = document.createElement('video');
-          el.controls = true; el.autoplay = true; el.muted = true; el.loop = true; el.setAttribute('playsinline','');
-          v.sources.forEach(function(s){ var src = document.createElement('source'); src.src = s.url; src.type = s.type; el.appendChild(src); });
-          lbBody.appendChild(el);
-        } else {
-          lbBody.innerHTML = '<iframe src="https://www.youtube.com/embed/'+v.id+'?autoplay=1&rel=0" frameborder="0" allowfullscreen allow="autoplay" style="width:100%;aspect-ratio:16/9;border-radius:16px"></iframe>';
+        if(card.dataset.yt){
+          openLb('<iframe src="https://www.youtube.com/embed/'+card.dataset.yt+'?autoplay=1&rel=0" frameborder="0" allowfullscreen allow="autoplay;encrypted-media" style="width:100%;aspect-ratio:16/9;border-radius:16px;display:block"></iframe>');
+        } else if(card.dataset.src){
+          var v = document.createElement('video');
+          v.controls = true; v.autoplay = true; v.muted = true; v.setAttribute('playsinline','');
+          if(card.dataset.poster) v.poster = card.dataset.poster;
+          v.innerHTML = '<source src="'+card.dataset.src+'" type="'+(card.dataset.mime||'video/mp4')+'">';
+          openLb(''); lbBody.appendChild(v);
         }
-        lb.style.display = 'flex';
-        document.body.style.overflow = 'hidden';
       });
     });
-    if(lbClose) lbClose.addEventListener('click', function(){ lb.style.display='none'; lbBody.innerHTML=''; document.body.style.overflow=''; });
-    if(lb) lb.addEventListener('click', function(e){ if(e.target === lb){ lb.style.display='none'; lbBody.innerHTML=''; document.body.style.overflow=''; } });
   })();
   </script>
 </section>
@@ -640,7 +632,8 @@
 .fs-vid-card:hover .fs-vid-thumb img { opacity: 0.85; }
 .fs-vid-play { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
 .fs-vid-label { font-size: 0.78rem; color: #888; margin-top: 8px; font-weight: 600; text-align: center; }
-.fs-vid-lb { position: fixed; inset: 0; z-index: 900; background: rgba(0,0,0,0.88); display: flex; align-items: center; justify-content: center; padding: 24px; }
+.fs-vid-lb { position: fixed; inset: 0; z-index: 900; background: rgba(0,0,0,0.88); display: none; align-items: center; justify-content: center; padding: 24px; }
+.fs-vid-lb[aria-hidden="false"] { display: flex; }
 .fs-vid-lb-body { width: 100%; max-width: 700px; }
 .fs-vid-lb-body video { width: 100%; border-radius: 16px; max-height: 80vh; object-fit: contain; display: block; }
 .fs-vid-lb-close { position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.15); border: none; color: #fff; font-size: 1.4rem; width: 44px; height: 44px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
