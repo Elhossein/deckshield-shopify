@@ -17,7 +17,12 @@
           <div class="fs-logo-wordmark">
             <span class="fs-logo-word">FLAME</span>
             <span class="fs-logo-sep"></span>
-            <span class="fs-logo-word">SH<span class="fs-logo-i">I<svg class="fs-logo-flame" viewBox="0 0 18 24" fill="currentColor"><path d="M9 0C9 0 3.5 7.5 3.5 13c0 3 2.5 5.5 5.5 5.5s5.5-2.5 5.5-5.5C14.5 7.5 9 0 9 0zm0 16.5c-2 0-3.5-1.5-3.5-3.5 0-3.2 3.5-8.5 3.5-8.5s3.5 5.3 3.5 8.5c0 2-1.5 3.5-3.5 3.5z"/></svg></span>ELD</span>
+            <span class="fs-logo-word">SH</span>
+            <span class="fs-logo-i-wrap">
+              <svg class="fs-logo-flame" viewBox="0 0 24 30" fill="#111"><path d="M12 0c0 0-2.8 3.6-4.8 7.8C5.2 12 4 15.6 4 18.2c0 4.4 3.6 8 8 8s8-3.6 8-8c0-2.6-1.2-6.2-3.2-10.4C14.8 3.6 12 0 12 0zm0 23.2c-2.8 0-5-2.2-5-5 0-1.8 0.8-4.4 2.2-7.2 0.8-1.6 1.8-3.2 2.8-4.6 1 1.4 2 3 2.8 4.6 1.4 2.8 2.2 5.4 2.2 7.2 0 2.8-2.2 5-5 5z"/></svg>
+              <span class="fs-logo-i-stem">I</span>
+            </span>
+            <span class="fs-logo-word">ELD</span>
           </div>
           <div class="fs-logo-line"></div>
           <div class="fs-logo-tagline">OUTDOOR PROTECTION GEAR</div>
@@ -54,23 +59,25 @@
 
 /* ═══ TEXT LOGO (fallback when no image uploaded) ═══ */
 .fs-logo { display:flex; flex-direction:column; align-items:center; gap:0; line-height:1; }
-.fs-logo-wordmark { display:flex; align-items:center; gap:0; }
-.fs-logo-word { font-family:'Inter',-apple-system,sans-serif; font-size:1.55rem; font-weight:900; color:#111; letter-spacing:0.02em; text-transform:uppercase; }
-.fs-logo-sep { width:1.5px; height:22px; background:#999; margin:0 8px; flex-shrink:0; }
-.fs-logo-i { position:relative; display:inline-block; }
-.fs-logo-flame { position:absolute; top:-11px; left:50%; transform:translateX(-50%); width:10px; height:13px; color:#111; }
-.fs-logo-line { width:100%; height:1.5px; background:#111; margin:4px 0 3px; }
-.fs-logo-tagline { font-family:'Inter',-apple-system,sans-serif; font-size:0.48rem; font-weight:500; color:#111; letter-spacing:0.22em; text-transform:uppercase; }
+.fs-logo-wordmark { display:flex; align-items:baseline; gap:0; }
+.fs-logo-word { font-family:'Arial Black','Inter',-apple-system,sans-serif; font-size:1.7rem; font-weight:900; color:#111; letter-spacing:-0.02em; text-transform:uppercase; line-height:1; }
+.fs-logo-sep { width:1px; height:24px; background:#888; margin:0 7px; flex-shrink:0; align-self:center; }
+.fs-logo-i-wrap { position:relative; display:inline-flex; flex-direction:column; align-items:center; align-self:baseline; }
+.fs-logo-flame { width:16px; height:20px; display:block; margin-bottom:-4px; }
+.fs-logo-i-stem { font-family:'Arial Black','Inter',-apple-system,sans-serif; font-size:1.7rem; font-weight:900; color:#111; letter-spacing:-0.02em; text-transform:uppercase; line-height:1; }
+.fs-logo-line { width:100%; height:1.5px; background:#111; margin:5px 0 4px; }
+.fs-logo-tagline { font-family:'Inter',Arial,sans-serif; font-size:0.5rem; font-weight:400; color:#111; letter-spacing:0.28em; text-transform:uppercase; }
 
 @media(max-width:600px){
   .ds-header-inner{padding:0 16px;height:68px}
   .ds-nav{gap:14px}
   .ds-nav-link{font-size:0.7rem}
   .ds-logo-img{height:44px}
-  .fs-logo-word{font-size:1.15rem}
-  .fs-logo-sep{height:16px;margin:0 5px}
-  .fs-logo-flame{width:8px;height:10px;top:-8px}
-  .fs-logo-tagline{font-size:0.38rem;letter-spacing:0.18em}
+  .fs-logo-word,.fs-logo-i-stem{font-size:1.2rem}
+  .fs-logo-sep{height:17px;margin:0 5px}
+  .fs-logo-flame{width:12px;height:15px;margin-bottom:-3px}
+  .fs-logo-tagline{font-size:0.38rem;letter-spacing:0.2em}
+  .fs-logo-line{margin:3px 0 3px}
 }
 @media(max-width:400px){
   .ds-nav{display:none}
