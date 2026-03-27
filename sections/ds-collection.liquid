@@ -1,0 +1,69 @@
+<!-- ══ COLLECTION PAGE ══ -->
+<section class="dsc-page">
+  <div class="dsc-inner">
+    <h1 class="dsc-title">{{ collection.title | default: 'All Products' }}</h1>
+    <p class="dsc-count">{{ collection.products_count }} product{{ collection.products_count | pluralize: '', 's' }}</p>
+
+    <div class="dsc-grid">
+      {%- for product in collection.products -%}
+        <a href="{{ product.url }}" class="dsc-card">
+          <div class="dsc-card-img-wrap">
+            {%- if product.featured_image -%}
+              <img src="{{ product.featured_image | image_url: width: 600 }}" alt="{{ product.title }}" class="dsc-card-img" loading="lazy" />
+            {%- else -%}
+              <img src="{{ 'gs-main.jpg' | asset_url }}" alt="{{ product.title }}" class="dsc-card-img" loading="lazy" />
+            {%- endif -%}
+            {%- if product.compare_at_price_max > product.price -%}
+              {%- assign save = product.compare_at_price_max | minus: product.price | times: 100 | divided_by: product.compare_at_price_max -%}
+              <span class="dsc-sale-badge">SAVE {{ save }}%</span>
+            {%- endif -%}
+          </div>
+          <div class="dsc-card-info">
+            <h2 class="dsc-card-title">{{ product.title }}</h2>
+            <div class="dsc-card-stars">★★★★★ <span>4.8</span></div>
+            <div class="dsc-card-prices">
+              <span class="dsc-card-price">{{ product.price | money }}</span>
+              {%- if product.compare_at_price_max > product.price -%}
+                <s class="dsc-card-compare">{{ product.compare_at_price_max | money }}</s>
+              {%- endif -%}
+            </div>
+            <button class="dsc-card-btn">Shop Now →</button>
+          </div>
+        </a>
+      {%- else -%}
+        <div class="dsc-empty">
+          <p>No products found. <a href="/admin/products/new">Add your first product →</a></p>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+<style>
+.dsc-page{padding:48px 20px 80px;background:#f8f8f6;min-height:60vh}
+.dsc-inner{max-width:1080px;margin:0 auto}
+.dsc-title{font-size:clamp(1.8rem,4vw,2.4rem);font-weight:900;color:#111;letter-spacing:-0.03em;margin-bottom:6px}
+.dsc-count{font-size:0.85rem;color:#888;margin-bottom:40px}
+.dsc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+@media(max-width:780px){.dsc-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:480px){.dsc-grid{grid-template-columns:1fr}}
+.dsc-card{background:#fff;border-radius:16px;overflow:hidden;border:1px solid #eee;box-shadow:0 2px 12px rgba(0,0,0,0.05);transition:transform 0.2s,box-shadow 0.2s;display:block}
+.dsc-card:hover{transform:translateY(-4px);box-shadow:0 8px 28px rgba(0,0,0,0.1)}
+.dsc-card-img-wrap{position:relative;overflow:hidden}
+.dsc-card-img{width:100%;aspect-ratio:1/1;object-fit:cover;transition:transform 0.3s}
+.dsc-card:hover .dsc-card-img{transform:scale(1.04)}
+.dsc-sale-badge{position:absolute;top:12px;left:12px;background:#e85d04;color:#fff;font-size:0.65rem;font-weight:800;padding:5px 12px;border-radius:99px;letter-spacing:0.06em}
+.dsc-card-info{padding:20px}
+.dsc-card-title{font-size:0.95rem;font-weight:800;color:#111;margin-bottom:6px;line-height:1.3}
+.dsc-card-stars{font-size:0.75rem;color:#f5a623;margin-bottom:10px}
+.dsc-card-stars span{color:#888;margin-left:4px}
+.dsc-card-prices{display:flex;align-items:center;gap:8px;margin-bottom:16px}
+.dsc-card-price{font-size:1.1rem;font-weight:900;color:#111}
+.dsc-card-compare{font-size:0.85rem;color:#aaa;text-decoration:line-through}
+.dsc-card-btn{width:100%;padding:12px;background:linear-gradient(135deg,#bf4500,#e85d04);color:#fff;border:none;border-radius:10px;font-size:0.88rem;font-weight:800;cursor:pointer;letter-spacing:0.01em;transition:opacity 0.15s}
+.dsc-card-btn:hover{opacity:0.9}
+.dsc-empty{grid-column:1/-1;text-align:center;padding:60px 20px;color:#888}
+.dsc-empty a{color:#e85d04;font-weight:700}
+</style>
+
+{% schema %}{"name":"DeckShield Collection","settings":[]}{% endschema %}
