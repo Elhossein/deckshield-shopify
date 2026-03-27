@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="{{ request.locale.iso_code }}">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ page_title }} — {{ shop.name }}</title>
+  <meta name="description" content="{{ page_description | escape }}" />
+  {{ content_for_header }}
+  {{ 'theme.css' | asset_url | stylesheet_tag }}
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,sans-serif;color:#222;background:#fff}
+    a{text-decoration:none;color:inherit}
+    img{max-width:100%;display:block}
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  {{ content_for_layout }}
+
+  <!-- Cart Drawer -->
+  <div id="ds-cart-drawer" style="display:none;position:fixed;inset:0;z-index:9999">
+    <div id="ds-cart-overlay" style="position:absolute;inset:0;background:rgba(0,0,0,0.5)"></div>
+    <div style="position:absolute;right:0;top:0;bottom:0;width:min(420px,100%);background:#fff;display:flex;flex-direction:column;box-shadow:-4px 0 24px rgba(0,0,0,0.15)">
+      <div style="padding:20px 24px;border-bottom:1px solid #eee;display:flex;align-items:center;justify-content:space-between">
+        <strong style="font-size:1.1rem">Your Cart</strong>
+        <button id="ds-cart-close" style="background:none;border:none;font-size:1.4rem;cursor:pointer;color:#555">✕</button>
+      </div>
+      <div id="ds-cart-body" style="flex:1;overflow-y:auto;padding:24px"></div>
+      <div style="padding:20px 24px;border-top:1px solid #eee">
+        <a href="/checkout" style="display:block;width:100%;padding:16px;background:#e85d04;color:#fff;text-align:center;font-weight:800;font-size:1rem;border-radius:10px;letter-spacing:0.02em">Proceed to Checkout →</a>
+      </div>
+    </div>
+  </div>
+
+  {{ 'theme.js' | asset_url | script_tag }}
+  <script>
+  (function(){
+    var drawer=document.getElementById('ds-cart-drawer');
+    var overlay=document.getElementById('ds-cart-overlay');
+    var closeBtn=document.getElementById('ds-cart-close');
+    function openCart(){
+      fetch('/cart.js').then(function(r){return r.json();}).then(function(cart){
+        var body=document.getElementById('ds-cart-body');
+        if(cart.item_count===0){body.innerHTML='<p style="color:#888;text-align:center;margin-top:40px">Your cart is empty.</p>';return;}
+        body.innerHTML=cart.items.map(function(item){
+          return '<div style="display:flex;gap:16px;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid #eee"><img src="'+item.image+'" style="width:80px;height:80px;object-fit:cover;border-radius:8px"/><div style="flex:1"><p style="font-weight:700;font-size:0.9rem">'+item.title+'</p><p style="color:#e85d04;font-weight:800;margin-top:4px">'+Shopify.formatMoney(item.final_price)+'</p><p style="color:#888;font-size:0.8rem">Qty: '+item.quantity+'</p></div></div>';
+        }).join('');
+      });
+      drawer.style.display='block';
+    }
+    if(overlay)overlay.addEventListener('click',function(){drawer.style.display='none';});
+    if(closeBtn)closeBtn.addEventListener('click',function(){drawer.style.display='none';});
+    document.addEventListener('click',function(e){
+      if(e.target.classList.contains('ds-open-cart')||e.target.closest('.ds-open-cart')){e.preventDefault();openCart();}
+    });
+  })();
+  </script>
+</body>
+</html>

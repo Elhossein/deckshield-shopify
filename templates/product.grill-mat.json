@@ -1,0 +1,7 @@
+{
+  "sections": {
+    "ds-header": { "type": "ds-header", "settings": {} },
+    "ds-hero":   { "type": "ds-product-hero", "settings": {} }
+  },
+  "order": ["ds-header", "ds-hero"]
+}

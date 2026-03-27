@@ -1,0 +1,6 @@
+{
+  "sections": {
+    "ds-header": { "type": "ds-header", "settings": {} }
+  },
+  "order": ["ds-header"]
+}
