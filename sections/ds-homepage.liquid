@@ -6,8 +6,7 @@
       <h1 class="dsh-hero-title">Protect Your Deck.<br><span>Grill Without Guilt.</span></h1>
       <p class="dsh-hero-sub">The heavy-duty, weather-proof mat that keeps grease, stains &amp; spills off your deck — forever. Trusted by 50,000+ homeowners across the US.</p>
       <div class="dsh-hero-btns">
-        <a href="/collections/all" class="dsh-btn-primary">Shop Now →</a>
-        <a href="/collections/all" class="dsh-btn-secondary">View All Products</a>
+        <a href="/products/{{ section.settings.product_handle | default: 'grill-mat' }}" class="dsh-btn-primary">Shop Now →</a>
       </div>
       <div class="dsh-hero-stars">
         <span style="color:#f5a623">★★★★★</span>
@@ -59,7 +58,7 @@
         <li>✅ Non-slip design stays exactly in place</li>
         <li>✅ Works on wood, composite &amp; concrete</li>
       </ul>
-      <a href="/collections/all" class="dsh-btn-primary" style="display:inline-flex;align-items:center;gap:8px;margin-top:8px">Shop Now →</a>
+      <a href="/products/{{ section.settings.product_handle | default: 'grill-mat' }}" class="dsh-btn-primary" style="display:inline-flex;align-items:center;gap:8px;margin-top:8px">Shop Now →</a>
     </div>
   </div>
 </section>
@@ -130,4 +129,17 @@
 .dsh-rev-card strong{font-size:0.8rem;color:#888}
 </style>
 
-{% schema %}{"name":"DeckShield Homepage","settings":[]}{% endschema %}
+{% schema %}
+{
+  "name": "DeckShield Homepage",
+  "settings": [
+    {
+      "type": "text",
+      "id": "product_handle",
+      "label": "Product URL handle",
+      "info": "Go to your product in Shopify admin and copy the handle from the URL (e.g. 'grill-mat')",
+      "default": "grill-mat"
+    }
+  ]
+}
+{% endschema %}
