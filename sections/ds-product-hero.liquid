@@ -143,6 +143,51 @@
   </div>
 </section>
 
+<!-- ══ PRODUCT VIDEOS ══ -->
+{%- assign ds_has_video = false -%}
+{%- for media in ds.media -%}
+  {%- if media.media_type == 'video' or media.media_type == 'external_video' -%}
+    {%- assign ds_has_video = true -%}
+    {%- break -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{%- if ds_has_video -%}
+<section class="ds-video-section">
+  <div class="ds-video-inner">
+    <p class="ds-eyebrow" style="text-align:center">SEE IT IN ACTION</p>
+    <h2 class="ds-section-title" style="text-align:center;color:#fff">Watch How It Works</h2>
+    <div class="ds-videos-grid">
+      {%- for media in ds.media -%}
+        {%- if media.media_type == 'video' -%}
+          <div class="ds-video-wrap">
+            <video controls autoplay muted loop playsinline preload="auto"
+              poster="{{ media.preview_image | image_url: width: 800 }}"
+              style="background:#000">
+              {%- for source in media.sources -%}
+                <source src="{{ source.url }}" type="{{ source.mime_type }}" />
+              {%- endfor -%}
+            </video>
+          </div>
+        {%- elsif media.media_type == 'external_video' -%}
+          <div class="ds-video-wrap">
+            {%- if media.host == 'youtube' -%}
+              <iframe src="https://www.youtube.com/embed/{{ media.external_id }}?autoplay=0&rel=0"
+                frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen loading="lazy"></iframe>
+            {%- elsif media.host == 'vimeo' -%}
+              <iframe src="https://player.vimeo.com/video/{{ media.external_id }}"
+                frameborder="0" allow="autoplay; fullscreen; picture-in-picture"
+                allowfullscreen loading="lazy"></iframe>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+{%- endif -%}
+
 <!-- ══ SOCIAL PROOF TICKER ══ -->
 <div class="ds-ticker-strip">
   <div class="ds-ticker-track">
@@ -477,6 +522,16 @@
 .ds-detail[open] .ds-chev{transform:rotate(180deg)}
 .ds-det-body{padding:0 0 14px 28px}
 .ds-det-body p{font-size:0.86rem;color:#555;line-height:1.7}
+
+/* ── Video section ── */
+.ds-video-section{padding:72px 20px;background:#111}
+.ds-video-inner{max-width:960px;margin:0 auto}
+.ds-video-section .ds-eyebrow{color:#e85d04}
+.ds-video-section .ds-section-title{margin-bottom:32px}
+.ds-videos-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
+.ds-video-wrap{border-radius:16px;overflow:hidden;background:#000;box-shadow:0 8px 40px rgba(0,0,0,0.5)}
+.ds-video-wrap video,.ds-video-wrap iframe{display:block;width:100%;height:auto;max-height:75vh;border:none;object-fit:contain}
+.ds-video-wrap iframe{aspect-ratio:16/9;height:auto}
 
 /* ── Ticker ── */
 .ds-ticker-strip{background:#111;color:rgba(255,255,255,0.8);padding:12px 0;overflow:hidden;white-space:nowrap}
