@@ -94,42 +94,49 @@
       <div class="fs-bundles" id="fs-bundles">
 
         <div class="fs-bundle-card fs-bundle-active" data-qty="1" data-price="5999" data-compare="7999">
-          <div class="fs-bundle-radio"><div class="fs-bundle-dot"></div></div>
-          <div class="fs-bundle-info">
-            <strong>1 Mat</strong>
-            <span>🔥 Save $20.00 today!</span>
+          <div class="fs-bundle-left">
+            <div class="fs-bundle-radio"><div class="fs-bundle-dot"></div></div>
+            <div class="fs-bundle-info">
+              <strong>1 Mat</strong>
+              <span class="fs-bundle-sub">🔥 Save $20.00 today!</span>
+            </div>
           </div>
-          <div class="fs-bundle-prices">
+          <div class="fs-bundle-right">
             <span class="fs-bundle-price">$59.99</span>
             <s class="fs-bundle-compare">$79.99</s>
+            <span class="fs-bundle-save-tag">SAVE 25%</span>
           </div>
         </div>
 
         <div class="fs-bundle-card" data-qty="2" data-price="8999" data-compare="11998">
-          <div class="fs-bundle-radio"><div class="fs-bundle-dot"></div></div>
-          <div class="fs-bundle-info">
-            <strong>2 Mats</strong>
-            <span>🎉 Buy One Get One <b>Half Off</b></span>
+          <span class="fs-bundle-badge">BOGO 50% OFF</span>
+          <div class="fs-bundle-left">
+            <div class="fs-bundle-radio"><div class="fs-bundle-dot"></div></div>
+            <div class="fs-bundle-info">
+              <strong>2 Mats</strong>
+              <span class="fs-bundle-sub">🎉 Buy One Get One <b>Half Off</b></span>
+            </div>
           </div>
-          <div class="fs-bundle-prices">
+          <div class="fs-bundle-right">
             <span class="fs-bundle-price">$89.99</span>
             <s class="fs-bundle-compare">$119.98</s>
+            <span class="fs-bundle-save-tag">SAVE 25%</span>
           </div>
-        </div>
-
-        <div class="fs-bundle-divider">
-          <span class="fs-bundle-best-tag">⭐ BEST VALUE — MOST POPULAR</span>
         </div>
 
         <div class="fs-bundle-card fs-bundle-best" data-qty="3" data-price="12999" data-compare="17997">
-          <div class="fs-bundle-radio"><div class="fs-bundle-dot"></div></div>
-          <div class="fs-bundle-info">
-            <strong>3 Mats — Family Deal</strong>
-            <span>🔥 Perfect for the whole family</span>
+          <span class="fs-bundle-badge fs-bundle-badge--best">⭐ BEST VALUE</span>
+          <div class="fs-bundle-left">
+            <div class="fs-bundle-radio"><div class="fs-bundle-dot"></div></div>
+            <div class="fs-bundle-info">
+              <strong>3 Mats — Family Deal</strong>
+              <span class="fs-bundle-sub">🔥 Only $43.33 each · Most Popular!</span>
+            </div>
           </div>
-          <div class="fs-bundle-prices">
+          <div class="fs-bundle-right">
             <span class="fs-bundle-price">$129.99</span>
             <s class="fs-bundle-compare">$179.97</s>
+            <span class="fs-bundle-save-tag">SAVE 28%</span>
           </div>
         </div>
 
@@ -150,7 +157,7 @@
 
       <!-- CTA -->
       <button class="fs-cta" id="fs-cta">
-        Add to Cart — <span id="fs-cta-price">$59.99</span>
+        Buy Now — <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="18" height="18" style="vertical-align:middle;margin:-2px 4px 0 0"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg><span id="fs-cta-price">$59.99</span>
       </button>
 
       <!-- Stock bar -->
@@ -557,7 +564,7 @@
     <strong>{{ ds.title | truncate: 36 }}</strong>
     <span id="fs-sticky-price">$59.99</span>
   </div>
-  <button class="fs-sticky-btn" id="fs-sticky-btn">Add to Cart</button>
+  <button class="fs-sticky-btn" id="fs-sticky-btn">Buy Now</button>
 </div>
 
 <script>
@@ -635,29 +642,25 @@
     });
   });
 
-  // Add to cart
-  async function addToCart(){
+  // Buy Now → direct to checkout
+  async function buyNow(){
     if(!v){ alert('Product not found. Please refresh.'); return; }
     var orig = cta ? cta.innerHTML : '';
-    if(cta){ cta.disabled=true; cta.textContent='Adding…'; }
-    if(stickyBtn){ stickyBtn.disabled=true; stickyBtn.textContent='Adding…'; }
+    if(cta){ cta.disabled=true; cta.textContent='Redirecting…'; }
+    if(stickyBtn){ stickyBtn.disabled=true; stickyBtn.textContent='Redirecting…'; }
     try{
+      await fetch('/cart/clear.js',{method:'POST',headers:{'Content-Type':'application/json'}});
       var res = await fetch('/cart/add.js',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({items:[{id:v.id,quantity:bundleQty}]})});
       if(!res.ok){ var e=await res.json().catch(function(){return{};}); throw new Error(e.description||'Error'); }
-      var cart = await fetch('/cart.js').then(function(r){return r.json();});
-      var badge = document.querySelector('.ds-cart-badge');
-      if(badge) badge.textContent = cart.item_count;
-      if(cta){ cta.disabled=false; cta.innerHTML='✓ Added to Cart!'; setTimeout(function(){ cta.innerHTML=orig; },2000); }
-      if(stickyBtn){ stickyBtn.disabled=false; stickyBtn.textContent='✓ Added!'; setTimeout(function(){ stickyBtn.textContent='Add to Cart'; },2000); }
-      document.querySelector('.ds-open-cart') && document.querySelector('.ds-open-cart').click();
+      window.location.href = '/checkout';
     } catch(err){
-      alert('Could not add: '+err.message);
+      alert('Could not proceed: '+err.message);
       if(cta){ cta.disabled=false; cta.innerHTML=orig; }
-      if(stickyBtn){ stickyBtn.disabled=false; stickyBtn.textContent='Add to Cart'; }
+      if(stickyBtn){ stickyBtn.disabled=false; stickyBtn.textContent='Buy Now'; }
     }
   }
-  if(cta) cta.addEventListener('click', addToCart);
-  if(stickyBtn) stickyBtn.addEventListener('click', addToCart);
+  if(cta) cta.addEventListener('click', buyNow);
+  if(stickyBtn) stickyBtn.addEventListener('click', buyNow);
 
   // Sticky bar
   var hero = document.querySelector('.fs-info');
@@ -712,14 +715,14 @@
 .fs-shopify-pay { font-size: 0.8rem; color: #888; margin-bottom: 22px; }
 
 /* ═══ SALE TIMER ═══ */
-.fs-sale-timer { display: flex; align-items: center; justify-content: space-between; background: linear-gradient(135deg, #1a472a, #2d6a3f); border: 1.5px solid #3a8c55; border-radius: 12px; padding: 14px 18px; margin-bottom: 12px; }
+.fs-sale-timer { display: flex; align-items: center; justify-content: space-between; background: linear-gradient(135deg, #bf4500, #e85d04); border: 1.5px solid #ff8a3d; border-radius: 12px; padding: 14px 18px; margin-bottom: 12px; box-shadow: 0 4px 16px rgba(232,93,4,0.2); }
 .fs-sale-left { display: flex; align-items: center; gap: 8px; }
 .fs-sale-icon { font-size: 1.1rem; }
 .fs-sale-label { font-size: 0.85rem; font-weight: 700; color: #fff; }
 .fs-timer-boxes { display: flex; align-items: center; gap: 6px; }
-.fs-timer-box { background: #fff; border-radius: 8px; padding: 6px 10px; text-align: center; min-width: 48px; }
-.fs-timer-box span { display: block; font-size: 1.3rem; font-weight: 900; color: #1a472a; line-height: 1; }
-.fs-timer-box small { display: block; font-size: 0.55rem; font-weight: 700; color: #888; letter-spacing: 0.1em; margin-top: 2px; }
+.fs-timer-box { background: #fff; border-radius: 8px; padding: 6px 10px; text-align: center; min-width: 48px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+.fs-timer-box span { display: block; font-size: 1.3rem; font-weight: 900; color: #bf4500; line-height: 1; }
+.fs-timer-box small { display: block; font-size: 0.55rem; font-weight: 700; color: #999; letter-spacing: 0.1em; margin-top: 2px; }
 .fs-timer-sep { font-size: 1.3rem; font-weight: 900; color: #fff; }
 
 /* ═══ LOW STOCK URGENCY ═══ */
@@ -732,30 +735,30 @@
 .fs-urgency-bottom { display: flex; justify-content: space-between; font-size: 0.75rem; color: #999; font-weight: 600; }
 
 /* ═══ BUNDLE DEALS ═══ */
-.fs-bundle-heading { font-size: 0.78rem; font-weight: 800; color: #333; text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 10px; text-align: center; }
-.fs-bundles { display: flex; flex-direction: column; gap: 0; margin-bottom: 20px; }
-.fs-bundle-card { display: flex; align-items: center; gap: 14px; padding: 16px 18px; border: 2px solid #e5e5e5; cursor: pointer; transition: all 0.2s ease; background: #fff; }
-.fs-bundle-card:first-child { border-radius: 12px 12px 0 0; }
-.fs-bundle-card:last-child { border-radius: 0 0 12px 12px; }
-.fs-bundle-card + .fs-bundle-card { border-top: none; }
-.fs-bundle-card + .fs-bundle-divider + .fs-bundle-card { border-top: none; }
-.fs-bundle-card:hover { background: #fafaf8; }
-.fs-bundle-card.fs-bundle-active { border-color: #2d6a3f; background: #f0faf3; box-shadow: 0 0 0 1px #2d6a3f; z-index: 1; position: relative; }
-.fs-bundle-card.fs-bundle-best.fs-bundle-active { background: #edf7f0; }
+.fs-bundle-heading { font-size: 0.78rem; font-weight: 800; color: #333; text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 12px; text-align: center; }
+.fs-bundles { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+.fs-bundle-card { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 18px 20px; border: 2px solid #e8e8e8; border-radius: 14px; cursor: pointer; transition: all 0.2s ease; background: #fff; }
+.fs-bundle-card:hover { border-color: #f0a060; background: #fffbf7; }
+.fs-bundle-card.fs-bundle-active { border-color: #e85d04; background: #fff8f0; box-shadow: 0 0 0 1px #e85d04, 0 4px 18px rgba(232,93,4,0.1); }
+.fs-bundle-card.fs-bundle-best { border-color: #e85d04; border-style: dashed; }
+.fs-bundle-card.fs-bundle-best.fs-bundle-active { border-style: solid; background: #fff6ee; box-shadow: 0 0 0 1px #e85d04, 0 6px 24px rgba(232,93,4,0.15); }
+.fs-bundle-left { display: flex; align-items: center; gap: 14px; flex: 1; }
 .fs-bundle-radio { width: 22px; height: 22px; border-radius: 50%; border: 2px solid #ccc; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: border-color 0.2s; }
-.fs-bundle-active .fs-bundle-radio { border-color: #2d6a3f; }
+.fs-bundle-active .fs-bundle-radio { border-color: #e85d04; }
 .fs-bundle-dot { width: 12px; height: 12px; border-radius: 50%; background: transparent; transition: background 0.2s; }
-.fs-bundle-active .fs-bundle-dot { background: #2d6a3f; }
+.fs-bundle-active .fs-bundle-dot { background: #e85d04; }
 .fs-bundle-info { flex: 1; }
-.fs-bundle-info strong { display: block; font-size: 0.95rem; color: #111; }
-.fs-bundle-info span { font-size: 0.78rem; color: #777; }
-.fs-bundle-prices { text-align: right; flex-shrink: 0; }
-.fs-bundle-price { display: block; font-size: 1.1rem; font-weight: 900; color: #111; }
-.fs-bundle-compare { font-size: 0.82rem; color: #bbb; text-decoration: line-through; }
-.fs-bundle-divider { text-align: center; margin: 0; position: relative; z-index: 2; }
-.fs-bundle-best-tag { display: inline-block; background: linear-gradient(135deg, #d4a017, #f5c518); color: #333; font-size: 0.65rem; font-weight: 800; padding: 4px 16px; border-radius: 99px; letter-spacing: 0.08em; text-transform: uppercase; transform: translateY(50%); box-shadow: 0 2px 8px rgba(212,160,23,0.3); }
+.fs-bundle-info strong { display: block; font-size: 0.95rem; color: #111; margin-bottom: 2px; }
+.fs-bundle-sub { font-size: 0.78rem; color: #777; }
+.fs-bundle-right { text-align: right; flex-shrink: 0; display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+.fs-bundle-price { font-size: 1.2rem; font-weight: 900; color: #111; }
+.fs-bundle-compare { font-size: 0.8rem; color: #bbb; text-decoration: line-through; }
+.fs-bundle-save-tag { font-size: 0.6rem; font-weight: 800; color: #fff; background: #e85d04; padding: 2px 8px; border-radius: 99px; letter-spacing: 0.04em; }
+.fs-bundle-badge { position: absolute; top: -9px; left: 20px; font-size: 0.6rem; font-weight: 800; color: #fff; background: #e85d04; padding: 3px 12px; border-radius: 99px; letter-spacing: 0.06em; text-transform: uppercase; z-index: 2; }
+.fs-bundle-badge--best { background: linear-gradient(135deg, #d4a017, #f5c518); color: #333; box-shadow: 0 2px 10px rgba(212,160,23,0.3); }
 @media(max-width: 480px) {
-  .fs-bundle-info span { font-size: 0.7rem; }
+  .fs-bundle-sub { font-size: 0.7rem; }
+  .fs-bundle-card { padding: 14px 14px; }
   .fs-timer-box { min-width: 40px; padding: 5px 8px; }
   .fs-timer-box span { font-size: 1.1rem; }
 }
