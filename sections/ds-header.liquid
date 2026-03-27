@@ -1,4 +1,4 @@
-<!-- ══ DECKSHIELD HEADER ══ -->
+<!-- ══ FLAME SHIELD HEADER ══ -->
 <div class="ds-announce">
   <a href="/products/grill-mat" class="ds-announce-link">🔥 Free Shipping on All Orders &nbsp;·&nbsp; 30-Day Money-Back Guarantee &nbsp;<strong>Shop Now →</strong></a>
 </div>
@@ -11,9 +11,17 @@
     </nav>
     <a href="/" class="ds-logo-link" aria-label="{{ shop.name }}">
       {%- if settings.logo != blank -%}
-        <img src="{{ settings.logo | image_url: width: 300 }}" alt="{{ shop.name }}" class="ds-logo-img" />
+        <img src="{{ settings.logo | image_url: width: 400 }}" alt="{{ shop.name }}" class="ds-logo-img" />
       {%- else -%}
-        <span class="ds-logo-text">{{ shop.name }}</span>
+        <div class="fs-logo">
+          <div class="fs-logo-wordmark">
+            <span class="fs-logo-word">FLAME</span>
+            <span class="fs-logo-sep"></span>
+            <span class="fs-logo-word">SH<span class="fs-logo-i">I<svg class="fs-logo-flame" viewBox="0 0 18 24" fill="currentColor"><path d="M9 0C9 0 3.5 7.5 3.5 13c0 3 2.5 5.5 5.5 5.5s5.5-2.5 5.5-5.5C14.5 7.5 9 0 9 0zm0 16.5c-2 0-3.5-1.5-3.5-3.5 0-3.2 3.5-8.5 3.5-8.5s3.5 5.3 3.5 8.5c0 2-1.5 3.5-3.5 3.5z"/></svg></span>ELD</span>
+          </div>
+          <div class="fs-logo-line"></div>
+          <div class="fs-logo-tagline">OUTDOOR PROTECTION GEAR</div>
+        </div>
       {%- endif -%}
     </a>
     <div class="ds-header-right">
@@ -33,19 +41,41 @@
 .ds-announce-link{color:#fff;text-decoration:none;letter-spacing:0.01em}
 .ds-announce-link:hover{text-decoration:underline}
 .ds-header{position:sticky;top:0;z-index:800;background:#fff;border-bottom:1px solid #eee;box-shadow:0 1px 8px rgba(0,0,0,0.06)}
-.ds-header-inner{max-width:1200px;margin:0 auto;padding:0 24px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;height:70px}
+.ds-header-inner{max-width:1200px;margin:0 auto;padding:0 24px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;height:78px}
 .ds-nav{display:flex;gap:24px;align-items:center}
 .ds-nav-link{font-size:0.78rem;font-weight:600;letter-spacing:0.04em;color:#555;text-transform:uppercase;transition:color 0.15s}
 .ds-nav-link:hover{color:#e85d04}
-.ds-logo-link{display:flex;justify-content:center;align-items:center}
-.ds-logo-img{height:48px;width:auto;object-fit:contain}
-.ds-logo-text{font-size:1.4rem;font-weight:900;letter-spacing:-0.02em;color:#111;text-transform:uppercase}
+.ds-logo-link{display:flex;justify-content:center;align-items:center;text-decoration:none}
+.ds-logo-img{height:56px;width:auto;object-fit:contain}
 .ds-header-right{display:flex;align-items:center;gap:8px;justify-content:flex-end}
 .ds-icon-btn{position:relative;background:none;border:none;color:#333;padding:6px;display:flex;align-items:center;justify-content:center;border-radius:8px;cursor:pointer;transition:color 0.15s,background 0.15s}
 .ds-icon-btn:hover{color:#e85d04;background:rgba(232,93,4,0.08)}
 .ds-cart-badge{position:absolute;top:0;right:0;background:#e85d04;color:#fff;font-size:0.58rem;font-weight:800;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;transform:translate(4px,-4px);line-height:1}
-@media(max-width:600px){.ds-header-inner{padding:0 16px;height:62px}.ds-nav{gap:14px}.ds-nav-link{font-size:0.7rem}.ds-logo-text{font-size:1.1rem}.ds-logo-img{height:38px}}
-@media(max-width:400px){.ds-nav{display:none}.ds-header-inner{grid-template-columns:auto 1fr}}
+
+/* ═══ TEXT LOGO (fallback when no image uploaded) ═══ */
+.fs-logo { display:flex; flex-direction:column; align-items:center; gap:0; line-height:1; }
+.fs-logo-wordmark { display:flex; align-items:center; gap:0; }
+.fs-logo-word { font-family:'Inter',-apple-system,sans-serif; font-size:1.55rem; font-weight:900; color:#111; letter-spacing:0.02em; text-transform:uppercase; }
+.fs-logo-sep { width:1.5px; height:22px; background:#999; margin:0 8px; flex-shrink:0; }
+.fs-logo-i { position:relative; display:inline-block; }
+.fs-logo-flame { position:absolute; top:-11px; left:50%; transform:translateX(-50%); width:10px; height:13px; color:#111; }
+.fs-logo-line { width:100%; height:1.5px; background:#111; margin:4px 0 3px; }
+.fs-logo-tagline { font-family:'Inter',-apple-system,sans-serif; font-size:0.48rem; font-weight:500; color:#111; letter-spacing:0.22em; text-transform:uppercase; }
+
+@media(max-width:600px){
+  .ds-header-inner{padding:0 16px;height:68px}
+  .ds-nav{gap:14px}
+  .ds-nav-link{font-size:0.7rem}
+  .ds-logo-img{height:44px}
+  .fs-logo-word{font-size:1.15rem}
+  .fs-logo-sep{height:16px;margin:0 5px}
+  .fs-logo-flame{width:8px;height:10px;top:-8px}
+  .fs-logo-tagline{font-size:0.38rem;letter-spacing:0.18em}
+}
+@media(max-width:400px){
+  .ds-nav{display:none}
+  .ds-header-inner{grid-template-columns:auto 1fr}
+}
 </style>
 
 <script>
@@ -55,4 +85,4 @@ fetch('/cart.js').then(function(r){return r.json();}).then(function(c){
 });
 </script>
 
-{% schema %}{"name":"DeckShield Header","settings":[]}{% endschema %}
+{% schema %}{"name":"Flame Shield Header","settings":[]}{% endschema %}
