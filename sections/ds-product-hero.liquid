@@ -34,7 +34,6 @@
           {%- endfor -%}
         {%- endif -%}
       </div>
-      <p class="fs-scroll-hint">Scroll down to see how it works</p>
     </div>
 
     <!-- RIGHT: Product Info -->
@@ -583,9 +582,13 @@
   var sticky = document.getElementById('fs-sticky');
   var installmentEl = document.getElementById('fs-installment');
 
-  var bundleQty = 1;
+  var selectedVariant = v;
 
   function fmtCents(c){ return '$'+(c/100).toFixed(2); }
+
+  function findVariantByPrice(price){
+    return variants.find(function(vr){ return vr.price === price && vr.available; }) || v;
+  }
 
   function updatePriceDisplay(price, compare){
     priceEl.textContent = fmtCents(price);
@@ -602,8 +605,9 @@
     card.addEventListener('click', function(){
       document.querySelectorAll('.fs-bundle-card').forEach(function(c){ c.classList.remove('fs-bundle-active'); });
       card.classList.add('fs-bundle-active');
-      bundleQty = parseInt(card.dataset.qty);
-      updatePriceDisplay(parseInt(card.dataset.price), parseInt(card.dataset.compare));
+      var bundlePrice = parseInt(card.dataset.price);
+      selectedVariant = findVariantByPrice(bundlePrice);
+      updatePriceDisplay(bundlePrice, parseInt(card.dataset.compare));
     });
   });
 
@@ -645,13 +649,13 @@
 
   // Buy Now → direct to checkout
   async function buyNow(){
-    if(!v){ alert('Product not found. Please refresh.'); return; }
+    if(!selectedVariant){ alert('Product not found. Please refresh.'); return; }
     var orig = cta ? cta.innerHTML : '';
     if(cta){ cta.disabled=true; cta.textContent='Redirecting…'; }
     if(stickyBtn){ stickyBtn.disabled=true; stickyBtn.textContent='Redirecting…'; }
     try{
       await fetch('/cart/clear.js',{method:'POST',headers:{'Content-Type':'application/json'}});
-      var res = await fetch('/cart/add.js',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({items:[{id:v.id,quantity:bundleQty}]})});
+      var res = await fetch('/cart/add.js',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({items:[{id:selectedVariant.id,quantity:1}]})});
       if(!res.ok){ var e=await res.json().catch(function(){return{};}); throw new Error(e.description||'Error'); }
       window.location.href = '/checkout';
     } catch(err){
@@ -699,7 +703,6 @@
 .fs-thumb { width: 76px; height: 76px; border-radius: 12px; overflow: hidden; border: 2.5px solid transparent; background: #f8f8f6; cursor: pointer; padding: 0; transition: border-color 0.15s, box-shadow 0.15s; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
 .fs-thumb img { width: 100%; height: 100%; object-fit: cover; }
 .fs-thumb.active, .fs-thumb:hover { border-color: #e85d04; box-shadow: 0 2px 12px rgba(232,93,4,0.25); }
-.fs-scroll-hint { text-align:center; font-size:0.82rem; font-weight:600; color:#999; margin-top:14px; letter-spacing:0.01em; }
 
 /* ── Info / Form ── */
 .fs-info { display: flex; flex-direction: column; gap: 0; }
