@@ -10,11 +10,7 @@
       <a href="/pages/contact" class="ds-nav-link">Contact</a>
     </nav>
     <a href="/" class="ds-logo-link" aria-label="{{ shop.name }}">
-      {%- if settings.logo != blank -%}
-        <img src="{{ settings.logo | image_url: width: 400 }}" alt="{{ shop.name }}" class="ds-logo-img" />
-      {%- else -%}
-        <span class="fs-logo-text">Flame Shield</span>
-      {%- endif -%}
+      <img src="{{ 'fs-logo.png' | asset_url }}" alt="Flame Shield – Outdoor Protection Gear" class="ds-logo-img" />
     </a>
     <div class="ds-header-right">
       <a href="/account" class="ds-icon-btn" aria-label="Account">
@@ -44,15 +40,11 @@
 .ds-icon-btn:hover{color:#e85d04;background:rgba(232,93,4,0.08)}
 .ds-cart-badge{position:absolute;top:0;right:0;background:#e85d04;color:#fff;font-size:0.58rem;font-weight:800;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;transform:translate(4px,-4px);line-height:1}
 
-/* ═══ TEXT LOGO ═══ */
-.fs-logo-text { font-family:'Playfair Display',Georgia,serif; font-size:1.6rem; font-weight:900; color:#111; letter-spacing:-0.01em; white-space:nowrap; }
-
 @media(max-width:600px){
   .ds-header-inner{padding:0 16px;height:62px}
   .ds-nav{gap:14px}
   .ds-nav-link{font-size:0.7rem}
   .ds-logo-img{height:44px}
-  .fs-logo-text{font-size:1.2rem}
 }
 @media(max-width:400px){
   .ds-nav{display:none}
